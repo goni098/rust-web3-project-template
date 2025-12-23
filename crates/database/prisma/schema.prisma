@@ -1,0 +1,12 @@
+datasource db {
+  provider = "postgresql"
+}
+
+model user {
+  id BigInt @id
+}
+
+model setting {
+  key   String @id @db.VarChar
+  value String @db.VarChar
+}

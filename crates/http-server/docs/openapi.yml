@@ -1,0 +1,39 @@
+openapi: 3.1.0
+info:
+    title: API docs
+    version: 1.0.0
+    description: |
+        Api document.
+
+paths:
+    /users/me:
+        get:
+            summary: who am i
+            tags:
+                - users
+            security:
+                - BearerAuth: []
+            description: |
+                Returns user information
+            responses:
+                "200":
+                    description: Successfully signed in
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Me"
+
+components:
+    securitySchemes:
+        BearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+            description: auth token
+
+    schemas:
+        Me:
+            type: object
+            properties:
+                id:
+                    type: integer

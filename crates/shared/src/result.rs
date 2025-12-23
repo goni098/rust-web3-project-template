@@ -26,12 +26,14 @@ pub enum AppErr {
     #[error("I/O error: {0}")]
     Io(#[from] std::io::Error),
 
-    #[error("invalid config: {0}")]
-    #[allow(dead_code)]
-    Config(String),
+    #[error("Custom: {0}")]
+    Custom(String),
 
     #[error("ParseIntError: {0}")]
     ParseInt(#[from] ParseIntError),
+
+    #[error(transparent)]
+    Database(#[from] sea_orm::error::DbErr),
 }
 
 pub type Rs<T> = Result<T, TracedAppErr>;
