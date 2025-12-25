@@ -18,7 +18,7 @@ pub async fn handler(
 ) -> HttpResult<Json<Response>> {
     let user = repositories::users::find_by_id(&db, claims.id)
         .await?
-        .ok_or(HttpException::Internal("user not found".into()))?;
+        .ok_or(HttpException::internal("user not found"))?;
 
     let response = Response { id: user.id };
 

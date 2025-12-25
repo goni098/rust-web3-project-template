@@ -15,16 +15,17 @@ async fn main() -> Result<(), std::io::Error> {
     let state = AppState::new().await;
 
     let app = Router::new()
-        .route("/", get(|| async { "🦀 hello !" }))
+        .route("/", get(async || "🦀 hello !"))
         .route(
             "/docs/openapi.yml",
-            get(|| async { include_str!("../docs/openapi.yml") }),
+            get(async || include_str!("../docs/openapi.yml")),
         )
         .route(
             "/docs",
-            get(|| async { Html(include_str!("../docs/openapi.html")) }),
+            get(async || Html(include_str!("../docs/openapi.html"))),
         )
         .merge(handlers::users::routes())
+        .merge(handlers::ws::routes())
         .layer(CorsLayer::permissive())
         .with_state(state);
 

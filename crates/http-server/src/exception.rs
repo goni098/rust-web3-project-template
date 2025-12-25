@@ -42,6 +42,12 @@ pub enum HttpException {
 
 pub type HttpResult<A> = Result<A, HttpException>;
 
+impl HttpException {
+    pub fn internal<E: ToString>(error: E) -> Self {
+        Self::Internal(error.to_string().into())
+    }
+}
+
 impl IntoResponse for HttpException {
     fn into_response(self) -> axum::response::Response {
         let status_code = match self {
