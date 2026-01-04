@@ -21,16 +21,16 @@ pub enum HttpException {
     #[error(transparent)]
     BodyRejection(#[from] axum::extract::rejection::JsonRejection),
 
-    #[error("{0:#?}")]
+    #[error("{0}")]
     BadRequest(Cow<'static, str>),
 
-    #[error("{0:#?}")]
+    #[error("{0}")]
     Unauthorized(Cow<'static, str>),
 
-    #[error("{0:#?}")]
+    #[error("{0}")]
     Internal(Cow<'static, str>),
 
-    #[error("{0:#?}")]
+    #[error("{0}")]
     Custom(Cow<'static, str>),
 
     #[error(transparent)]
@@ -59,7 +59,7 @@ impl IntoResponse for HttpException {
             Self::Validation(_) => StatusCode::BAD_REQUEST,
             Self::Unauthorized(_) => StatusCode::UNAUTHORIZED,
             _ => {
-                tracing::error!("{:#?} ", self);
+                tracing::error!("{} ", self);
                 StatusCode::INTERNAL_SERVER_ERROR
             }
         };

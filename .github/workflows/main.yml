@@ -1,0 +1,54 @@
+name: staging
+
+on:
+    push:
+        branches:
+            - dev
+
+jobs:
+    release:
+        runs-on: ubuntu-22.04
+
+        steps:
+            - name: checkout
+              uses: actions/checkout@v6
+
+            - name: Install dependency
+              run: sudo apt-get install libudev-dev
+
+            - name: Install Rust stable
+              uses: dtolnay/rust-toolchain@stable
+
+            - name: Setup cache
+              uses: Swatinem/rust-cache@v2
+
+            - name: Build binary
+              run: cargo build --locked --release --workspace
+
+            - name: Upload smf binary
+              uses: appleboy/scp-action@v0.1.7
+              with:
+                  host: ${{ secrets.VM_HOST }}
+                  username: ${{ secrets.VM_USER }}
+                  key: ${{ secrets.VM_KEY }}
+                  source: "
+                      target/release/http-server,
+                      crates/database/prisma/schema.prisma,
+                      ecosystem.config.js
+                      "
+                  target: ~/moneyfi
+
+    start-smf:
+        runs-on: ubuntu-latest
+        needs: release
+        steps:
+            - name: Deploy on server
+              uses: appleboy/ssh-action@v1.1.0
+              with:
+                  host: ${{ secrets.VM_HOST }}
+                  username: ${{ secrets.VM_USER }}
+                  key: ${{ secrets.VM_KEY }}
+                  script: |
+                      export NVM_DIR=~/.nvm
+                      source ~/.nvm/nvm.sh
+                      ~/moneyfi/exe.sh
