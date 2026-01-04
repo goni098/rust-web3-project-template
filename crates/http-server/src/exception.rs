@@ -34,10 +34,7 @@ pub enum HttpException {
     Custom(Cow<'static, str>),
 
     #[error(transparent)]
-    App(#[from] shared::result::AppErr),
-
-    #[error(transparent)]
-    TracedApp(#[from] shared::result::TracedAppErr),
+    App(#[from] shared::result::TracedAppErr),
 }
 
 pub type HttpResult<A> = Result<A, HttpException>;
@@ -45,6 +42,15 @@ pub type HttpResult<A> = Result<A, HttpException>;
 impl HttpException {
     pub fn internal<E: ToString>(error: E) -> Self {
         Self::Internal(error.to_string().into())
+    }
+
+    #[allow(dead_code)]
+    pub fn bad_request<E: Into<Cow<'static, str>>>(error: E) -> Self {
+        Self::BadRequest(error.into())
+    }
+
+    pub fn unauthorized<E: Into<Cow<'static, str>>>(error: E) -> Self {
+        Self::Unauthorized(error.into())
     }
 }
 

@@ -1,8 +1,5 @@
 use crate::{
-    exception::{
-        HttpException::{self, *},
-        HttpResult,
-    },
+    exception::{HttpException, HttpResult},
     extractors::state::Secrets,
 };
 use axum::{
@@ -45,7 +42,7 @@ where
         parts
             .extract::<TypedHeader<Authorization<Bearer>>>()
             .await
-            .map_err(|_| Unauthorized("Missing Authorization".into()))
+            .map_err(|_| HttpException::unauthorized("Missing Authorization"))
             .and_then(|bearer| decode_token(bearer.token(), &access_token_secret))
             .map(Self)
     }
@@ -58,8 +55,8 @@ fn decode_token<T: DeserializeOwned>(token: &str, secret: &str) -> HttpResult<T>
         &Validation::default(),
     )
     .map_err(|err| match err.kind() {
-        ErrorKind::ExpiredSignature => Unauthorized("Expired token".into()),
-        _ => Unauthorized("Invalid token".into()),
+        ErrorKind::ExpiredSignature => HttpException::unauthorized("Expired token"),
+        _ => HttpException::unauthorized("Invalid token"),
     })
     .map(|token_data| token_data.claims)
 }
