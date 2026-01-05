@@ -14,7 +14,8 @@ pub fn load() {
 }
 
 pub fn read(env: Env) -> String {
-    std::env::var(env.key().as_ref()).unwrap()
+    let var = env.key();
+    std::env::var(var.as_ref()).unwrap_or_else(|_| panic!("missing {}", var))
 }
 
 impl Env {
