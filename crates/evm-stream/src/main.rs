@@ -67,9 +67,7 @@ async fn bootstrap(
                 }
             },
             _ = ping_clock.tick() => {
-                    ws.write_frame(Frame::new(true, OpCode::Ping, None, Payload::Borrowed(&[])))
-                        .await?;
-
+                    ws.write_frame(Frame::new(true, OpCode::Ping, None, Payload::Borrowed(&[]))).await?;
                     tracing::info!("ping!!!");
             }
         }
