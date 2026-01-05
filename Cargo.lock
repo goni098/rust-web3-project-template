@@ -1743,6 +1743,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "evm-scanner"
+version = "0.1.0"
+dependencies = [
+ "alloy",
+ "database",
+ "evm",
+ "evm-stream",
+ "futures-util",
+ "shared",
+ "tokio",
+ "tracing",
+]
+
+[[package]]
+name = "evm-stream"
+version = "0.1.0"
+dependencies = [
+ "alloy",
+ "database",
+ "fastwebsockets",
+ "hyper",
+ "serde",
+ "serde_json",
+ "shared",
+ "tokio",
+ "tracing",
+ "ws-client",
+]
+
+[[package]]
 name = "fastrand"
 version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4108,6 +4138,14 @@ dependencies = [
  "libc",
  "windows-sys 0.60.2",
 ]
+
+[[package]]
+name = "sol-scanner"
+version = "0.1.0"
+
+[[package]]
+name = "sol-stream"
+version = "0.1.0"
 
 [[package]]
 name = "solana"

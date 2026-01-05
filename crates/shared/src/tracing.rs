@@ -4,7 +4,14 @@ pub fn subscribe() {
         EnvFilter, Layer, filter, fmt, layer::SubscriberExt, util::SubscriberInitExt,
     };
 
-    let bins = ["err_trace", "http_server"];
+    let bins = [
+        "err_trace",
+        "http_server",
+        "evm_scanner",
+        "evm_stream",
+        "solana_scanner",
+        "solana_stream",
+    ];
 
     let out_layer = fmt::layer()
         .with_writer(std::io::stdout)

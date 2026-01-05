@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use sea_orm::{
     ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, sea_query::Expr,
 };
@@ -8,7 +10,7 @@ use crate::entities::setting;
 
 #[derive(Clone, Copy, Debug)]
 pub enum Setting {
-    Something,
+    EvmScannedBlock(u64),
 }
 
 #[instrument(skip(db))]
@@ -45,9 +47,9 @@ pub async fn insert(db: &DatabaseConnection, key: Setting, value: String) -> Rs<
 }
 
 impl Setting {
-    fn to_str_key(self) -> &'static str {
+    fn to_str_key(self) -> Cow<'static, str> {
         match self {
-            Self::Something => "some_thing",
+            Self::EvmScannedBlock(chain) => format!("evm_scanned_block_chain_{}", chain).into(),
         }
     }
 }
