@@ -28,7 +28,7 @@ pub type WalletClient = FillProvider<
 >;
 
 pub fn create_public_client(chain: u64) -> PublicClient {
-    let client = creat_root_client(chain);
+    let client = create_root_client(chain);
 
     ProviderBuilder::new()
         .disable_recommended_fillers()
@@ -37,7 +37,7 @@ pub fn create_public_client(chain: u64) -> PublicClient {
 }
 
 pub fn create_wallet_client(chain: u64, signers: Vec<PrivateKeySigner>) -> WalletClient {
-    let client = creat_root_client(chain);
+    let client = create_root_client(chain);
 
     let wallet = signers
         .into_iter()
@@ -57,7 +57,7 @@ pub trait SendEip1559 {
     fn send_eip1559_tx(
         &self,
         tx: TransactionRequest,
-        buffer_gas_in_percent: u8,
+        buffer_gas: u8,
         sender: Option<Address>,
     ) -> impl std::future::Future<Output = Rs<TxHash>> + Send;
 
@@ -69,11 +69,11 @@ pub trait SendEip1559 {
 }
 
 impl SendEip1559 for WalletClient {
-    #[instrument(skip(tx))]
+    #[instrument(skip(self, tx))]
     async fn send_eip1559_tx(
         &self,
         mut tx: TransactionRequest,
-        buffer_gas_in_percent: u8,
+        buffer_gas: u8,
         sender: Option<Address>,
     ) -> Rs<TxHash> {
         let sender = sender.unwrap_or_else(|| self.default_signer_address());
@@ -87,9 +87,9 @@ impl SendEip1559 for WalletClient {
             mut max_priority_fee_per_gas,
         } = self.estimate_eip1559_fees().await?;
 
-        max_priority_fee_per_gas += max_priority_fee_per_gas.percent(buffer_gas_in_percent);
-        max_fee_per_gas += max_fee_per_gas.percent(buffer_gas_in_percent);
-        gas_limit += gas_limit.percent(buffer_gas_in_percent);
+        max_priority_fee_per_gas += max_priority_fee_per_gas.percent(buffer_gas);
+        max_fee_per_gas += max_fee_per_gas.percent(buffer_gas);
+        gas_limit += gas_limit.percent(buffer_gas);
 
         let nonce = self.get_transaction_count(sender).await?;
 
@@ -110,7 +110,7 @@ impl SendEip1559 for WalletClient {
         }
     }
 
-    #[instrument(skip(tx))]
+    #[instrument(skip(self, tx))]
     async fn try_to_send_eip1559_tx(
         &self,
         tx: TransactionRequest,
@@ -143,7 +143,7 @@ impl SendEip1559 for WalletClient {
     }
 }
 
-fn creat_root_client(chain: u64) -> RpcClient {
+fn create_root_client(chain: u64) -> RpcClient {
     let fallback_layer =
         FallbackLayer::default().with_active_transport_count(NonZeroUsize::new(2).unwrap());
 

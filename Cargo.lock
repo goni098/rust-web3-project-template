@@ -4140,15 +4140,15 @@ dependencies = [
 ]
 
 [[package]]
-name = "sol-scanner"
-version = "0.1.0"
-
-[[package]]
-name = "sol-stream"
-version = "0.1.0"
-
-[[package]]
 name = "solana"
+version = "0.1.0"
+
+[[package]]
+name = "solana-scanner"
+version = "0.1.0"
+
+[[package]]
+name = "solana-stream"
 version = "0.1.0"
 
 [[package]]

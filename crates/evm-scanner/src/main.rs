@@ -2,6 +2,7 @@ use std::time::Duration;
 
 use alloy::{
     eips::BlockNumberOrTag,
+    primitives::Address,
     providers::Provider,
     rpc::types::{Filter, FilterBlockOption},
 };
@@ -36,10 +37,8 @@ async fn bootstrap(chain: u64) -> Rs<()> {
         }
     };
 
-    let adddresses = vec![];
-
     let mut filter = Filter::new()
-        .address(adddresses)
+        .address(Address::ZERO)
         .from_block(BlockNumberOrTag::Number(current_scanned_block));
 
     loop {
