@@ -1,7 +1,7 @@
 use sea_orm::{
-    ActiveValue::Set, ColumnTrait, DatabaseConnection, DbErr, EntityTrait, QueryFilter,
-    sea_query::Expr,
+    ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter, sea_query::Expr,
 };
+use shared::result::Rs;
 use tracing::instrument;
 
 use crate::entities::setting;
@@ -12,7 +12,7 @@ pub enum Setting {
 }
 
 #[instrument(skip(db))]
-pub async fn get(db: &DatabaseConnection, key: Setting) -> Result<Option<String>, DbErr> {
+pub async fn get(db: &DatabaseConnection, key: Setting) -> Rs<Option<String>> {
     let val = setting::Entity::find_by_id(key.to_str_key())
         .one(db)
         .await?
@@ -22,7 +22,7 @@ pub async fn get(db: &DatabaseConnection, key: Setting) -> Result<Option<String>
 }
 
 #[instrument(skip(db))]
-pub async fn set(db: &DatabaseConnection, key: Setting, value: String) -> Result<(), DbErr> {
+pub async fn set(db: &DatabaseConnection, key: Setting, value: String) -> Rs<()> {
     setting::Entity::update_many()
         .col_expr(setting::Column::Value, Expr::value(value))
         .filter(setting::Column::Key.eq(key.to_str_key()))
@@ -33,7 +33,7 @@ pub async fn set(db: &DatabaseConnection, key: Setting, value: String) -> Result
 }
 
 #[instrument(skip(db))]
-pub async fn insert(db: &DatabaseConnection, key: Setting, value: String) -> Result<(), DbErr> {
+pub async fn insert(db: &DatabaseConnection, key: Setting, value: String) -> Rs<()> {
     setting::Entity::insert(setting::ActiveModel {
         key: Set(key.to_str_key().to_string()),
         value: Set(value),
