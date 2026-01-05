@@ -10,6 +10,8 @@ pub enum Env {
 pub fn load() {
     if dotenv::dotenv().is_err() {
         println!("not found .env path, load as default");
+    } else {
+        println!("loaded .env file");
     }
 }
 
