@@ -10,3 +10,4 @@ thiserror = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 sea-orm = { workspace = true }
+alloy = { workspace = true }

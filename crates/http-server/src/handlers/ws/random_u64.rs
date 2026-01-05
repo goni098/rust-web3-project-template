@@ -53,7 +53,7 @@ async fn handle_client(fut: UpgradeFut) -> Result<(), WebSocketError> {
                     }
                     OpCode::Ping => ws.write_frame(Frame::pong(frame.payload)).await?,
                     OpCode::Binary | OpCode::Text => {
-                        tracing::info!("received from client {:?}", frame.payload.as_ref());
+                        tracing::info!("received from client {:?}", frame.payload);
                     }
                     _ => {}
                 }

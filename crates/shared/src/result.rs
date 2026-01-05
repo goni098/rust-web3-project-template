@@ -1,4 +1,4 @@
-use std::num::ParseIntError;
+use std::{borrow::Cow, num::ParseIntError};
 
 use tracing_error::SpanTrace;
 
@@ -27,13 +27,28 @@ pub enum AppErr {
     Io(#[from] std::io::Error),
 
     #[error("Custom: {0}")]
-    Custom(String),
+    Custom(Cow<'static, str>),
 
     #[error("ParseIntError: {0}")]
     ParseInt(#[from] ParseIntError),
 
     #[error(transparent)]
     Database(#[from] sea_orm::error::DbErr),
+
+    #[error(transparent)]
+    EvmRpc(#[from] alloy::transports::RpcError<alloy::transports::TransportErrorKind>),
+
+    #[error(transparent)]
+    SolTypes(#[from] alloy::sol_types::Error),
+
+    #[error(transparent)]
+    WaitReceiptTx(#[from] alloy::providers::PendingTransactionError),
 }
 
 pub type Rs<T> = Result<T, TracedAppErr>;
+
+impl AppErr {
+    pub fn custom<E: Into<Cow<'static, str>>>(error: E) -> TracedAppErr {
+        Self::Custom(error.into()).into()
+    }
+}

@@ -83,6 +83,6 @@ webpki-roots = { version = "1.0.5" }
 # borsh = { version = "1.6.0" }
 # bs58 = { version = "0.5.1" }
 
-# # evm
-# alloy = { version = "1.2.1" }
-# alloy-chains = { version = "0.2.24", features = ["serde"] }
+# evm
+alloy = { version = "1.2.1" }
+alloy-chains = { version = "0.2.24", features = ["serde"] }
