@@ -27,13 +27,24 @@ async fn main() {
         .await
         .unwrap_or_else(|error| panic!("Db error {}", error));
 
-    let mut cursor = repositories::settings::get(&db, Setting::SolCurrentScannedSignature)
-        .await
-        .expect("fail to get solana_current_scanned_signature setting")
-        .unwrap_or_else(|| Signature::default().to_string());
+    let mut cursor = if let Some(sig) =
+        repositories::settings::get(&db, Setting::SolCurrentScannedSignature)
+            .await
+            .expect("fail to get solana_current_scanned_signature setting")
+    {
+        sig
+    } else {
+        let default = Signature::default().to_string();
+
+        repositories::settings::insert(&db, Setting::SolCurrentScannedSignature, default.clone())
+            .await
+            .expect("fail to get solana_current_scanned_signature setting");
+
+        default
+    };
 
     tracing::info!("🦀 Events scanner started, program_id: {}", PROGRAM_ID);
-    tracing::info!("Starting from signature: {:?}", cursor);
+    tracing::info!("Starting from signature: {}", cursor);
 
     loop {
         match scan(&db, &client, &mut cursor).await {
@@ -49,7 +60,7 @@ async fn main() {
     }
 }
 
-#[instrument(skip(db, client))]
+#[instrument(skip_all)]
 async fn scan(db: &DatabaseConnection, client: &RpcClient, cursor: &mut String) -> Rs<()> {
     let mut before: Option<Signature> = None;
     let mut is_reached_cursor = false;
@@ -67,6 +78,8 @@ async fn scan(db: &DatabaseConnection, client: &RpcClient, cursor: &mut String) 
             .get_signatures_for_address_with_config(&PROGRAM_ID, config)
             .await?;
 
+        dbg!(page.len());
+
         if page.is_empty() {
             break;
         }
@@ -81,7 +94,7 @@ async fn scan(db: &DatabaseConnection, client: &RpcClient, cursor: &mut String) 
                 break;
             }
 
-            proceed_signature(client, &tx.signature).await?;
+            proceed_signature(client, db, &tx.signature).await?;
         }
 
         if is_reached_cursor {
@@ -105,7 +118,10 @@ async fn scan(db: &DatabaseConnection, client: &RpcClient, cursor: &mut String) 
     Ok(())
 }
 
-async fn proceed_signature(client: &RpcClient, signature: &str) -> Rs<()> {
+#[instrument(skip_all)]
+async fn proceed_signature(client: &RpcClient, db: &DatabaseConnection, signature: &str) -> Rs<()> {
+    tracing::info!("processing signature {}", signature);
+
     let sig = signature.parse()?;
 
     let config = RpcTransactionConfig {
@@ -120,7 +136,7 @@ async fn proceed_signature(client: &RpcClient, signature: &str) -> Rs<()> {
         && let OptionSerializer::Some(_logs) = meta.log_messages
     {
         let timestamp = tx.block_time.unwrap_or_default();
-        tracing::info!("timestamp {}", timestamp);
+        repositories::signatures::upsert(db, signature.to_string(), timestamp).await?;
     }
 
     Ok(())
