@@ -43,6 +43,12 @@ pub enum AppErr {
 
     #[error(transparent)]
     WaitReceiptTx(#[from] alloy::providers::PendingTransactionError),
+
+    #[error(transparent)]
+    SolanaClient(#[from] solana_client::client_error::ClientError),
+
+    #[error(transparent)]
+    ParseSignature(#[from] solana_sdk::signature::ParseSignatureError),
 }
 
 pub type Rs<T> = Result<T, TracedAppErr>;

@@ -3,6 +3,7 @@ use std::borrow::Cow;
 pub enum Env {
     DatabaseUrl,
     AccessTokenKey,
+    SolanaRpc,
     EvmWsRpc(u64),
     PubEvmRpc(u64),
     PriEvmRpc(u64),
@@ -29,6 +30,7 @@ impl Env {
             Self::EvmWsRpc(chain) => format!("WS_RPC_CHAIN_{}", chain).into(),
             Self::PubEvmRpc(chain) => format!("PUBLIC_RPC_CHAIN_{}", chain).into(),
             Self::PriEvmRpc(chain) => format!("PRIVATE_RPC_CHAIN_{}", chain).into(),
+            Env::SolanaRpc => "SOLANA_RPC".into(),
         }
     }
 }

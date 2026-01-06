@@ -11,3 +11,5 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 sea-orm = { workspace = true }
 alloy = { workspace = true }
+solana-sdk = { workspace = true }
+solana-client = { workspace = true }

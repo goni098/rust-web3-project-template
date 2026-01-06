@@ -11,6 +11,7 @@ use crate::entities::setting;
 #[derive(Clone, Copy, Debug)]
 pub enum Setting {
     EvmScannedBlock(u64),
+    SolCurrentScannedSignature,
 }
 
 #[instrument(skip(db))]
@@ -50,6 +51,7 @@ impl Setting {
     fn to_str_key(self) -> Cow<'static, str> {
         match self {
             Self::EvmScannedBlock(chain) => format!("evm_scanned_block_chain_{}", chain).into(),
+            Self::SolCurrentScannedSignature => "solana_current_scanned_signature".into(),
         }
     }
 }
