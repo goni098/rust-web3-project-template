@@ -5,6 +5,7 @@ use database::repositories::settings::Setting;
 use database::sea_orm::DatabaseConnection;
 use shared::{env::Env, result::Rs};
 use solana::PROGRAM_ID;
+use solana_client::rpc_response::RpcConfirmedTransactionStatusWithSignature;
 use solana_client::{
     nonblocking::rpc_client::RpcClient, rpc_client::GetConfirmedSignaturesForAddress2Config,
     rpc_config::RpcTransactionConfig, rpc_response::OptionSerializer,
@@ -27,32 +28,18 @@ async fn main() {
         .await
         .unwrap_or_else(|error| panic!("Db error {}", error));
 
-    let mut cursor = if let Some(sig) =
-        repositories::settings::get(&db, Setting::SolCurrentScannedSignature)
-            .await
-            .expect("fail to get solana_current_scanned_signature setting")
-    {
-        sig
-    } else {
-        let default = Signature::default().to_string();
+    let mut cursor = find_or_init_cursor(&db, &client)
+        .await
+        .unwrap_or_else(|error| panic!("find cursor error {}", error));
 
-        repositories::settings::insert(&db, Setting::SolCurrentScannedSignature, default.clone())
-            .await
-            .expect("fail to get solana_current_scanned_signature setting");
-
-        default
-    };
-
-    tracing::info!("🦀 Events scanner started, program_id: {}", PROGRAM_ID);
+    tracing::info!("Events scanner started, program_id: {}", PROGRAM_ID);
     tracing::info!("Starting from signature: {}", cursor);
 
     loop {
         match scan(&db, &client, &mut cursor).await {
-            Ok(_) => {
-                tracing::info!("Scan cycle completed successfully");
-            }
+            Ok(_) => {}
             Err(error) => {
-                tracing::error!("scan error: {:#?}", error);
+                tracing::error!("scan error: {}", error);
             }
         }
 
@@ -61,65 +48,70 @@ async fn main() {
 }
 
 #[instrument(skip_all)]
-async fn scan(db: &DatabaseConnection, client: &RpcClient, cursor: &mut String) -> Rs<()> {
-    let mut before: Option<Signature> = None;
-    let mut is_reached_cursor = false;
-    let mut newest_processed: Option<String> = None;
+async fn scan(_db: &DatabaseConnection, client: &RpcClient, cursor: &mut Signature) -> Rs<()> {
+    let txns = retrieve_signatures(client, cursor).await?;
 
-    loop {
-        let config = GetConfirmedSignaturesForAddress2Config {
-            commitment: Some(CommitmentConfig::finalized()),
-            before,
-            until: None,
-            limit: None,
-        };
+    dbg!(txns.len());
 
-        let page = client
-            .get_signatures_for_address_with_config(&PROGRAM_ID, config)
-            .await?;
-
-        dbg!(page.len());
-
-        if page.is_empty() {
-            break;
-        }
-
-        if newest_processed.is_none() {
-            newest_processed = Some(page.first().unwrap().signature.clone());
-        }
-
-        for tx in &page {
-            if tx.signature == *cursor {
-                is_reached_cursor = true;
-                break;
-            }
-
-            proceed_signature(client, db, &tx.signature).await?;
-        }
-
-        if is_reached_cursor {
-            break;
-        }
-
-        before = Some(page.last().unwrap().signature.parse()?);
-    }
-
-    if let Some(new_cursor) = newest_processed {
-        *cursor = new_cursor;
-
-        repositories::settings::set(db, Setting::SolCurrentScannedSignature, cursor.clone())
-            .await?;
-
-        tracing::info!("cursor updated to {}", cursor);
-    } else {
-        tracing::info!("no new signatures found");
+    if let Some(txn) = txns.first() {
+        *cursor = txn.signature.parse()?;
     }
 
     Ok(())
 }
 
 #[instrument(skip_all)]
-async fn proceed_signature(client: &RpcClient, db: &DatabaseConnection, signature: &str) -> Rs<()> {
+async fn retrieve_signatures(
+    client: &RpcClient,
+    cursor: &Signature,
+) -> Rs<Vec<RpcConfirmedTransactionStatusWithSignature>> {
+    let mut first_page = client
+        .get_signatures_for_address_with_config(
+            &PROGRAM_ID,
+            GetConfirmedSignaturesForAddress2Config {
+                commitment: Some(CommitmentConfig::finalized()),
+                until: Some(*cursor),
+                before: None,
+                limit: None,
+            },
+        )
+        .await?;
+
+    if first_page.is_empty() {
+        tracing::info!("No new tx found");
+        return Ok(first_page);
+    }
+
+    let mut last = first_page.last().unwrap().signature.parse::<Signature>()?;
+
+    loop {
+        let next_page = client
+            .get_signatures_for_address_with_config(
+                &PROGRAM_ID,
+                GetConfirmedSignaturesForAddress2Config {
+                    commitment: Some(CommitmentConfig::finalized()),
+                    until: Some(*cursor),
+                    before: Some(last),
+                    limit: None,
+                },
+            )
+            .await?;
+
+        if next_page.is_empty() {
+            return Ok(first_page);
+        }
+
+        last = next_page.last().unwrap().signature.parse()?;
+        first_page.extend(next_page);
+    }
+}
+
+#[instrument(skip_all)]
+async fn _proceed_signature(
+    client: &RpcClient,
+    db: &DatabaseConnection,
+    signature: &str,
+) -> Rs<()> {
     tracing::info!("processing signature {}", signature);
 
     let sig = signature.parse()?;
@@ -140,4 +132,50 @@ async fn proceed_signature(client: &RpcClient, db: &DatabaseConnection, signatur
     }
 
     Ok(())
+}
+
+#[instrument(skip_all)]
+async fn find_or_init_cursor(db: &DatabaseConnection, client: &RpcClient) -> Rs<Signature> {
+    if let Some(sig) = repositories::settings::get(db, Setting::SolCurrentScannedSignature).await? {
+        Ok(sig.parse()?)
+    } else {
+        tracing::info!("Finding the first signature of program...");
+
+        let sig = get_the_first_signature(client)
+            .await?
+            .expect("not found the first signature");
+
+        repositories::settings::insert(db, Setting::SolCurrentScannedSignature, sig.to_string())
+            .await?;
+
+        Ok(sig)
+    }
+}
+
+#[instrument(skip_all)]
+async fn get_the_first_signature(client: &RpcClient) -> Rs<Option<Signature>> {
+    let mut before: Option<Signature> = None;
+    let mut first_signature: Option<Signature> = None;
+
+    loop {
+        let page = client
+            .get_signatures_for_address_with_config(
+                &PROGRAM_ID,
+                GetConfirmedSignaturesForAddress2Config {
+                    commitment: Some(CommitmentConfig::finalized()),
+                    before,
+                    until: None,
+                    limit: None,
+                },
+            )
+            .await?;
+
+        if page.is_empty() {
+            return Ok(first_signature);
+        }
+
+        let last = page.last().unwrap().signature.parse()?;
+        before = Some(last);
+        first_signature = Some(last);
+    }
 }
