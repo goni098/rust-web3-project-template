@@ -3,12 +3,14 @@ use std::time::Duration;
 use database::repositories;
 use database::repositories::settings::Setting;
 use database::sea_orm::DatabaseConnection;
+use futures_util::TryFutureExt;
+use futures_util::future::join_all;
 use shared::{env::Env, result::Rs};
 use solana::PROGRAM_ID;
 use solana_client::rpc_response::RpcConfirmedTransactionStatusWithSignature;
 use solana_client::{
     nonblocking::rpc_client::RpcClient, rpc_client::GetConfirmedSignaturesForAddress2Config,
-    rpc_config::RpcTransactionConfig, rpc_response::OptionSerializer,
+    rpc_config::RpcTransactionConfig,
 };
 use solana_commitment_config::CommitmentConfig;
 use solana_sdk::signature::Signature;
@@ -48,13 +50,16 @@ async fn main() {
 }
 
 #[instrument(skip_all)]
-async fn scan(_db: &DatabaseConnection, client: &RpcClient, cursor: &mut Signature) -> Rs<()> {
-    let txns = retrieve_signatures(client, cursor).await?;
+async fn scan(db: &DatabaseConnection, client: &RpcClient, cursor: &mut Signature) -> Rs<()> {
+    let signatures = retrieve_signatures(client, cursor).await?;
+    let next_curor = signatures.first().and_then(|tx| tx.signature.parse().ok());
 
-    dbg!(txns.len());
+    proceed_signatures(db, client, signatures).await;
 
-    if let Some(txn) = txns.first() {
-        *cursor = txn.signature.parse()?;
+    if let Some(next_curor) = next_curor {
+        *cursor = next_curor;
+        repositories::settings::set(db, Setting::SolCurrentScannedSignature, cursor.to_string())
+            .await?;
     }
 
     Ok(())
@@ -82,7 +87,7 @@ async fn retrieve_signatures(
         return Ok(first_page);
     }
 
-    let mut last = first_page.last().unwrap().signature.parse::<Signature>()?;
+    let mut before = first_page.last().and_then(|tx| tx.signature.parse().ok());
 
     loop {
         let next_page = client
@@ -91,7 +96,7 @@ async fn retrieve_signatures(
                 GetConfirmedSignaturesForAddress2Config {
                     commitment: Some(CommitmentConfig::finalized()),
                     until: Some(*cursor),
-                    before: Some(last),
+                    before,
                     limit: None,
                 },
             )
@@ -101,37 +106,9 @@ async fn retrieve_signatures(
             return Ok(first_page);
         }
 
-        last = next_page.last().unwrap().signature.parse()?;
+        before = next_page.last().and_then(|tx| tx.signature.parse().ok());
         first_page.extend(next_page);
     }
-}
-
-#[instrument(skip_all)]
-async fn _proceed_signature(
-    client: &RpcClient,
-    db: &DatabaseConnection,
-    signature: &str,
-) -> Rs<()> {
-    tracing::info!("processing signature {}", signature);
-
-    let sig = signature.parse()?;
-
-    let config = RpcTransactionConfig {
-        max_supported_transaction_version: Some(0),
-        commitment: Some(CommitmentConfig::finalized()),
-        encoding: None,
-    };
-
-    let tx = client.get_transaction_with_config(&sig, config).await?;
-
-    if let Some(meta) = tx.transaction.meta
-        && let OptionSerializer::Some(_logs) = meta.log_messages
-    {
-        let timestamp = tx.block_time.unwrap_or_default();
-        repositories::signatures::upsert(db, signature.to_string(), timestamp).await?;
-    }
-
-    Ok(())
 }
 
 #[instrument(skip_all)]
@@ -174,8 +151,70 @@ async fn get_the_first_signature(client: &RpcClient) -> Rs<Option<Signature>> {
             return Ok(first_signature);
         }
 
-        let last = page.last().unwrap().signature.parse()?;
-        before = Some(last);
-        first_signature = Some(last);
+        let last = page.last().and_then(|tx| tx.signature.parse().ok());
+        before = last;
+        first_signature = last;
     }
+}
+
+#[instrument(skip_all)]
+async fn proceed_signatures(
+    db: &DatabaseConnection,
+    client: &RpcClient,
+    mut signatures: Vec<RpcConfirmedTransactionStatusWithSignature>,
+) {
+    while !signatures.is_empty() {
+        let tasks = signatures.iter().take(10).map(|tx| {
+            proceed_signle_signature(client, db, &tx.signature)
+                .map_err(move |error| (&tx.signature, error))
+        });
+
+        let mut succeeded = Vec::with_capacity(10);
+
+        join_all(tasks)
+            .await
+            .into_iter()
+            .for_each(|result| match result {
+                Err((signature, err)) => {
+                    tracing::warn!("proceed {} error {}", signature, err);
+                }
+                Ok(signature) => {
+                    succeeded.push(signature);
+                }
+            });
+
+        signatures.retain(|tx| !succeeded.iter().any(|sig| sig.to_string() == tx.signature));
+    }
+}
+
+#[instrument(skip_all)]
+async fn proceed_signle_signature(
+    client: &RpcClient,
+    db: &DatabaseConnection,
+    signature: &str,
+) -> Rs<Signature> {
+    tracing::info!("processing signature {}", signature);
+    let signature = signature.parse()?;
+
+    let config = RpcTransactionConfig {
+        max_supported_transaction_version: Some(0),
+        commitment: Some(CommitmentConfig::finalized()),
+        encoding: None,
+    };
+
+    let tx = client
+        .get_transaction_with_config(&signature, config)
+        .await?;
+
+    let timestamp = tx.block_time.unwrap_or_default();
+    repositories::signatures::upsert(db, signature.to_string(), timestamp).await?;
+
+    // if let Some(meta) = tx.transaction.meta
+    //     && let OptionSerializer::Some(_logs) = meta.log_messages
+    // {
+    //     let timestamp = tx.block_time.unwrap_or_default();
+    //     repositories::signatures::upsert(db, sig.to_string(), timestamp).await?;
+    // }
+
+    Ok(signature)
 }

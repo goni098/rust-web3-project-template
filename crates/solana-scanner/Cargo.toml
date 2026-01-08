@@ -10,6 +10,7 @@ solana-transaction-status = { workspace = true }
 solana-commitment-config = { workspace = true }
 tracing = { workspace = true }
 tokio = { workspace = true }
+futures-util = { workspace = true }
 
 shared = { path = "../shared" }
 database = { path = "../database" }

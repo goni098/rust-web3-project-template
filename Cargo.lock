@@ -6435,6 +6435,7 @@ name = "solana-scanner"
 version = "0.1.0"
 dependencies = [
  "database",
+ "futures-util",
  "shared",
  "solana",
  "solana-client",
