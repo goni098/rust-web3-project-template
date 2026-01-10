@@ -4,7 +4,7 @@ use database::repositories;
 use database::repositories::settings::Setting;
 use database::sea_orm::DatabaseConnection;
 use shared::{env::Env, result::Rs};
-use solana::PROGRAM_ID;
+use solana::bo::program::PROGRAM_ID;
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_commitment_config::CommitmentConfig;
 use solana_sdk::signature::Signature;

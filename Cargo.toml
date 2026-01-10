@@ -67,7 +67,9 @@ url = { version = "2" }
 bytes = { version = "1.11.0" }
 
 # tls
-tokio-rustls = { version = "0.26.4" }
+tokio-rustls = { version = "0.26.4", default-features = false, features = [
+    "ring",
+] }
 webpki-roots = { version = "1.0.5" }
 
 # solana
@@ -75,13 +77,16 @@ solana-client = { version = "3.1.5" }
 solana-sdk = { version = "3.0.0" }
 solana-transaction-status = { version = "3.1.5" }
 solana-commitment-config = { version = "3.1.0" }
-# spl-associated-token-account-interface = { version = "2.0.0" }
-# spl-token-2022-interface = { version = "2.1.0" }
-# solana-system-interface = { version = "3.0.0" }
-# spl-token-interface = { version = "2.0.0" }
-# solana-compute-budget-interface = { version = "3.0.0" }
-# borsh = { version = "1.6.0" }
-# bs58 = { version = "0.5.1" }
+spl-associated-token-account-interface = { version = "2.0.0" }
+spl-token-2022-interface = { version = "2.1.0" }
+solana-system-interface = { version = "3.0.0" }
+spl-token-interface = { version = "2.0.0" }
+solana-compute-budget-interface = { version = "3.0.0" }
+borsh = { version = "1.6.0" }
+
+# encoding
+bs58 = { version = "0.5.1" }
+base64 = { version = "0.22.1" }
 
 # evm
 alloy = { version = "1.2.1" }

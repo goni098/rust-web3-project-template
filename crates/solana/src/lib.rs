@@ -1,4 +1,4 @@
-use solana_sdk::pubkey;
-use solana_sdk::pubkey::Pubkey;
+pub mod bo;
+pub mod fetcher;
 
-pub const PROGRAM_ID: Pubkey = pubkey!("HF1uuMHBmtaCYqhFx2wCFYhkAim8uLaxpMUeWmeTXtD9");
+const DISCRIMINATOR_SIZE: usize = 8;

@@ -78,7 +78,7 @@ async fn scan(
     let logs = client.get_logs(filter).await?;
     let catched_len = logs.len();
 
-    let tasks = logs.into_iter().map(|log| evm_stream::proceed_log(db, log));
+    let tasks = logs.into_iter().map(|log| evm_stream::handle_log(db, log));
 
     try_join_all(tasks).await?;
 

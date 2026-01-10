@@ -10,7 +10,7 @@ fastwebsockets = { workspace = true }
 bytes = { workspace = true }
 http-body-util = { workspace = true }
 hyper-util = { workspace = true }
-tokio-rustls = { workspace = true }
+tokio-rustls = { workspace = true, features = ["ring"] }
 webpki-roots = { workspace = true }
 
 shared = { path = "../shared" }

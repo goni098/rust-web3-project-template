@@ -17,7 +17,7 @@ pub async fn consume_txs(
     while !txs.is_empty() {
         let batch: Vec<_> = txs.drain(..txs.len().min(CONCURRENCY_SIGNATURE)).collect();
 
-        let results = join_all(batch.iter().map(|tx| handle_tx(client, db, &tx))).await;
+        let results = join_all(batch.iter().map(|tx| handle_tx(client, db, tx))).await;
 
         for (tx, result) in batch.into_iter().zip(results) {
             if let Err(err) = result {

@@ -4,3 +4,16 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+tokio = { workspace = true }
+serde_json = { workspace = true }
+fastwebsockets = { workspace = true }
+solana-client = { workspace = true }
+serde = { workspace = true }
+tracing = { workspace = true }
+hyper = { workspace = true }
+solana-sdk = { workspace = true }
+
+ws-client = { path = "../ws-client" }
+database = { path = "../database" }
+shared = { path = "../shared" }
+solana = { path = "../solana" }

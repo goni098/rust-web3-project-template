@@ -5,3 +5,10 @@ edition = "2024"
 
 [dependencies]
 solana-sdk = { workspace = true }
+borsh = { workspace = true }
+solana-client = { workspace = true }
+base64 = { workspace = true }
+solana-system-interface = { workspace = true }
+spl-associated-token-account-interface = { workspace = true }
+
+shared = { path = "../shared" }

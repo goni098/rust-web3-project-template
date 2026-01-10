@@ -1,5 +1,5 @@
 use shared::result::Rs;
-use solana::PROGRAM_ID;
+use solana::bo::program::PROGRAM_ID;
 use solana_client::rpc_response::RpcConfirmedTransactionStatusWithSignature;
 use solana_client::{
     nonblocking::rpc_client::RpcClient, rpc_client::GetConfirmedSignaturesForAddress2Config,

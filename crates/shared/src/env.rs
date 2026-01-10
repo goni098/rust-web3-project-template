@@ -4,6 +4,7 @@ pub enum Env {
     DatabaseUrl,
     AccessTokenKey,
     SolanaRpc,
+    SolanaWsRpc,
     EvmWsRpc(u64),
     PubEvmRpc(u64),
     PriEvmRpc(u64),
@@ -30,7 +31,8 @@ impl Env {
             Self::EvmWsRpc(chain) => format!("WS_RPC_CHAIN_{}", chain).into(),
             Self::PubEvmRpc(chain) => format!("PUBLIC_RPC_CHAIN_{}", chain).into(),
             Self::PriEvmRpc(chain) => format!("PRIVATE_RPC_CHAIN_{}", chain).into(),
-            Env::SolanaRpc => "SOLANA_RPC".into(),
+            Self::SolanaRpc => "SOLANA_RPC".into(),
+            Self::SolanaWsRpc => "SOLANA_WS_RPC".into(),
         }
     }
 }

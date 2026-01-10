@@ -59,16 +59,16 @@ async fn bootstrap(
         tokio::select! {
             frame = ws.read_frame() => {
                 if let Some(log) = extrator::extract_frame(frame?, &mut ws).await? {
-                    evm_stream::proceed_log(db,log).await.unwrap_or_else(|error| {
-                        tracing::error!("proceed logs error {}",error);
-                    });
-                } else {
-                    tracing::debug!("received none log from incoming frame")
+                    evm_stream::handle_log(db, log)
+                        .await
+                        .unwrap_or_else(|error| {
+                            tracing::error!("handle log error {}", error);
+                        });
                 }
             },
             _ = ping_clock.tick() => {
-                    ws.write_frame(Frame::new(true, OpCode::Ping, None, Payload::Borrowed(&[]))).await?;
-                    tracing::info!("ping!!!");
+                ws.write_frame(Frame::new(true, OpCode::Ping, None, Payload::Borrowed(&[]))).await?;
+                tracing::info!("ping!");
             }
         }
     }
