@@ -1,0 +1,16 @@
+[package]
+name = "ws-client"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { workspace = true }
+hyper = { workspace = true }
+fastwebsockets = { workspace = true }
+bytes = { workspace = true }
+http-body-util = { workspace = true }
+hyper-util = { workspace = true }
+tokio-rustls = { workspace = true }
+webpki-roots = { workspace = true }
+
+shared = { path = "../shared" }

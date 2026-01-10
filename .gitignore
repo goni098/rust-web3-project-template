@@ -1,2 +1,5 @@
 /target
 /**/.DS_Store
+/_generated_
+node_modules
+.env
