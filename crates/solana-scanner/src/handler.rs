@@ -2,7 +2,8 @@ use database::repositories;
 use database::sea_orm::DatabaseConnection;
 use futures_util::future::join_all;
 use shared::result::Rs;
-use solana_client::rpc_response::RpcConfirmedTransactionStatusWithSignature;
+use solana::bo::program::BoEvent;
+use solana_client::rpc_response::{OptionSerializer, RpcConfirmedTransactionStatusWithSignature};
 use solana_client::{nonblocking::rpc_client::RpcClient, rpc_config::RpcTransactionConfig};
 use tracing::instrument;
 
@@ -47,15 +48,17 @@ async fn handle_tx(
         .get_transaction_with_config(&signature, config)
         .await?;
 
-    let timestamp = txn.block_time.unwrap_or_default();
-    repositories::signatures::upsert(db, signature.to_string(), timestamp).await?;
+    if let Some(meta) = txn.transaction.meta
+        && let OptionSerializer::Some(logs) = meta.log_messages
+    {
+        let timestamp = txn.block_time.unwrap_or_default();
 
-    // if let Some(meta) = txn.transaction.meta
-    //     && let OptionSerializer::Some(_logs) = meta.log_messages
-    // {
-    //     let timestamp = txn.block_time.unwrap_or_default();
-    //     repositories::signatures::upsert(db, sig.to_string(), timestamp).await?;
-    // }
+        let events = BoEvent::from_logs(&logs);
+
+        dbg!(&events);
+
+        repositories::signatures::upsert(db, signature.to_string(), timestamp).await?;
+    }
 
     Ok(())
 }

@@ -9,10 +9,11 @@ use spl_associated_token_account_interface::address::get_associated_token_addres
 
 use crate::bo::{
     event::{PositionMode, Side},
-    program::{
-        PROGRAM_ID, derive_market_pda, derive_pool_pda, derive_position_pda, derive_vault_pda,
+    pda::{
+        derive_market_pda, derive_pool_pda, derive_position_pda, derive_vault_pda,
         derive_vault_ta_pda,
     },
+    program::PROGRAM_ID,
 };
 
 #[derive(BorshSerialize)]

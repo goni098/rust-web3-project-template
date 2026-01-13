@@ -1519,6 +1519,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "cmacro"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "sha2",
+ "syn 2.0.114",
+]
+
+[[package]]
 name = "combine"
 version = "3.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5249,11 +5259,13 @@ version = "0.1.0"
 dependencies = [
  "base64 0.22.1",
  "borsh",
+ "cmacro",
  "shared",
  "solana-client",
  "solana-sdk",
  "solana-system-interface 3.0.0",
  "spl-associated-token-account-interface",
+ "strum",
 ]
 
 [[package]]

@@ -21,7 +21,9 @@ pub async fn handle_response_log(
         return Ok(None);
     }
 
-    let events = solana::bo::program::parse_logs(res.value.logs);
+    let events = solana::bo::program::BoEvent::from_logs(&res.value.logs);
+
+    dbg!(&events);
 
     handle_events(db, &signature, Utc::now().timestamp(), events).await?;
 

@@ -10,5 +10,7 @@ solana-client = { workspace = true }
 base64 = { workspace = true }
 solana-system-interface = { workspace = true }
 spl-associated-token-account-interface = { workspace = true }
+strum = { workspace = true }
 
 shared = { path = "../shared" }
+cmacro = { path = "../cmacro" }
