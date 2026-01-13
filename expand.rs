@@ -732,6 +732,28 @@ pub mod bo {
                     .collect()
             }
         }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for BoEvent {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                match self {
+                    BoEvent::OpenPosition(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "OpenPosition",
+                            &__self_0,
+                        )
+                    }
+                    BoEvent::SettlePosition(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "SettlePosition",
+                            &__self_0,
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 pub mod fetcher {

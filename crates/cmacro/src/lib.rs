@@ -3,11 +3,11 @@ use quote::quote;
 use sha2::{Digest, Sha256};
 use syn::{Fields, Ident, ItemEnum, LitInt, Token, Type, parse::Parse, parse_macro_input};
 
-fn compute_discriminator_bytes(name: &str) -> [u8; 8] {
+fn compute_discriminator_bytes(name: &str, take: usize) -> Vec<u8> {
     let mut hasher = Sha256::new();
     hasher.update(b"event:");
     hasher.update(name.as_bytes());
-    hasher.finalize()[..8].try_into().unwrap()
+    hasher.finalize().into_iter().take(take).collect()
 }
 
 struct Args {
@@ -74,7 +74,7 @@ pub fn anchor_events(attr: TokenStream, item: TokenStream) -> TokenStream {
             variant_ident.span(),
         );
 
-        let bytes = compute_discriminator_bytes(&inner_ident.to_string());
+        let bytes = compute_discriminator_bytes(&inner_ident.to_string(), discriminator as usize);
         let b0 = bytes[0];
         let b1 = bytes[1];
         let b2 = bytes[2];
