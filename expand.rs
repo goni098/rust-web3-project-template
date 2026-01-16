@@ -696,10 +696,10 @@ pub mod bo {
             OpenPosition(PositionOpened),
             SettlePosition(PositionSettled),
         }
-        static OPENPOSITION_DISC: [u8; 8] = [
+        static OPENPOSITION_DISC: [u8; 8u8 as usize] = [
             237u8, 175u8, 243u8, 230u8, 147u8, 117u8, 101u8, 121u8,
         ];
-        static SETTLEPOSITION_DISC: [u8; 8] = [
+        static SETTLEPOSITION_DISC: [u8; 8u8 as usize] = [
             75u8, 100u8, 92u8, 189u8, 245u8, 116u8, 252u8, 221u8,
         ];
         impl BoEvent {

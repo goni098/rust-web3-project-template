@@ -75,18 +75,12 @@ pub fn anchor_events(attr: TokenStream, item: TokenStream) -> TokenStream {
         );
 
         let bytes = compute_discriminator_bytes(&inner_ident.to_string(), discriminator as usize);
-        let b0 = bytes[0];
-        let b1 = bytes[1];
-        let b2 = bytes[2];
-        let b3 = bytes[3];
-        let b4 = bytes[4];
-        let b5 = bytes[5];
-        let b6 = bytes[6];
-        let b7 = bytes[7];
+
+        let byte_tokens = bytes.iter().map(|b| quote! { #b });
 
         statics.push(quote! {
-            static #disc_ident: [u8; 8] = [
-                #b0, #b1, #b2, #b3, #b4, #b5, #b6, #b7
+            static #disc_ident: [u8; #discriminator as usize] = [
+                #(#byte_tokens),*
             ];
         });
 
