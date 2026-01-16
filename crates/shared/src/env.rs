@@ -10,17 +10,19 @@ pub enum Env {
     PriEvmRpc(u64),
 }
 
+/// Loads environment variables from .env file if present
 pub fn load() {
-    if dotenv::dotenv().is_err() {
-        println!("not found .env path, load as default");
-    } else {
-        println!("loaded .env file");
+    match dotenv::dotenv() {
+        Ok(path) => println!("✓ Loaded .env file from: {}", path.display()),
+        Err(_) => println!("⚠ No .env file found, using system environment variables"),
     }
 }
 
+/// Reads an environment variable, panicking with a clear message if missing
 pub fn read(env: Env) -> String {
     let var = env.key();
-    std::env::var(var.as_ref()).unwrap_or_else(|_| panic!("missing {}", var))
+    std::env::var(var.as_ref())
+        .unwrap_or_else(|_| panic!("❌ Missing required environment variable: {}", var))
 }
 
 impl Env {

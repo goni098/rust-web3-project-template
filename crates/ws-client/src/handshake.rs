@@ -15,8 +15,18 @@ use tokio_rustls::rustls::pki_types::ServerName;
 
 use crate::tls::tls_connector;
 
+/// WebSocket frame collector with fragment reassembly
 pub type FrameCollector = FragmentCollector<TokioIo<Upgraded>>;
 
+/// Establishes a WebSocket connection to the specified URI
+/// 
+/// Automatically handles TLS for `wss://` and `https://` schemes
+/// 
+/// # Arguments
+/// * `uri` - The WebSocket URI to connect to
+/// 
+/// # Returns
+/// A frame collector for reading/writing WebSocket frames
 pub async fn connect(uri: &Uri) -> Result<FrameCollector, WebSocketError> {
     let host = uri.host().expect("not found host");
     let port = uri.port_u16().unwrap_or(443);

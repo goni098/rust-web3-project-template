@@ -1,10 +1,13 @@
+/// Initializes the tracing subscriber with stdout and stderr layers
+/// 
+/// Logs at ERROR level go to stderr, all other levels to stdout
 pub fn subscribe() {
     use tracing::Level;
     use tracing_subscriber::{
         EnvFilter, Layer, filter, fmt, layer::SubscriberExt, util::SubscriberInitExt,
     };
 
-    let bins = [
+    const BINS: [&str; 6] = [
         "err_trace",
         "http_server",
         "evm_scanner",
@@ -16,9 +19,9 @@ pub fn subscribe() {
     let out_layer = fmt::layer()
         .with_writer(std::io::stdout)
         .with_filter(
-            bins.iter()
+            BINS.iter()
                 .fold(EnvFilter::from_default_env(), |filter, bin| {
-                    filter.add_directive(bin.parse().unwrap())
+                    filter.add_directive(bin.parse().expect("Invalid filter directive"))
                 }),
         )
         .with_filter(filter::filter_fn(|metadata| {

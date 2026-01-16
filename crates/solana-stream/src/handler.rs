@@ -3,50 +3,107 @@ use shared::result::Rs;
 use solana::bo::program::BoEvent;
 use solana_client::rpc_response::{Response, RpcLogsResponse};
 use solana_sdk::signature::Signature;
-use tracing::instrument;
+use tracing::{debug, info, instrument, warn};
 
-#[instrument(skip_all)]
+/// Processes a Solana log response and extracts/handles events
+#[instrument(skip(db), fields(signature = %res.value.signature))]
 pub async fn handle_response_log(
     db: &DatabaseConnection,
     res: Response<RpcLogsResponse>,
 ) -> Rs<Option<String>> {
     let signature = res.value.signature;
 
+    // Early return for default/invalid signatures
     if signature == Signature::default().to_string() {
+        debug!("Skipping default signature");
         return Ok(None);
     }
 
-    if res.value.err.is_some() {
-        tracing::info!("skip err transaction {}", signature);
+    // Skip failed transactions
+    if let Some(ref err) = res.value.err {
+        warn!(
+            signature = %signature,
+            error = ?err,
+            "Skipping failed transaction"
+        );
         return Ok(None);
     }
 
-    let events = solana::bo::program::BoEvent::from_logs(&res.value.logs);
+    // Parse events from logs
+    let events = BoEvent::from_logs(&res.value.logs);
 
-    dbg!(&events);
+    if events.is_empty() {
+        debug!(signature = %signature, "No events found in transaction");
+        return Ok(None);
+    }
 
+    debug!(
+        signature = %signature,
+        event_count = events.len(),
+        "Found events: {:#?}", events
+    );
+
+    // Process events
     handle_events(db, &signature, Utc::now().timestamp(), events).await?;
 
     Ok(Some(signature))
 }
 
-#[instrument(skip_all)]
+/// Processes individual blockchain events
+#[instrument(skip(_db), fields(signature = %signature, event_count = events.len()))]
 async fn handle_events(
     _db: &DatabaseConnection,
-    _signature: &str,
-    _timestamp: i64,
+    signature: &str,
+    timestamp: i64,
     events: Vec<BoEvent>,
 ) -> Rs<()> {
-    for log in events {
-        match log {
-            BoEvent::OpenPosition(event) => {
-                tracing::info!("OpenPosition event: {:#?}", event);
+    for event in events {
+        match event {
+            BoEvent::OpenPosition(ref data) => {
+                info!(
+                    signature = %signature,
+                    timestamp = timestamp,
+                    "Processing OpenPosition: {:#?}",
+                    data
+                );
+                // TODO: Persist to database
+                // save_open_position(db, signature, timestamp, data).await?;
             }
-            BoEvent::SettlePosition(event) => {
-                tracing::info!("SettlePosition event: {:#?}", event);
+            BoEvent::SettlePosition(ref data) => {
+                info!(
+                    signature = %signature,
+                    timestamp = timestamp,
+                    "Processing SettlePosition: {:#?}",
+                    data
+                );
+                // TODO: Persist to database
+                // save_settle_position(db, signature, timestamp, data).await?;
             }
-        };
+        }
     }
 
     Ok(())
 }
+
+// Future database persistence functions
+// #[instrument(skip(db))]
+// async fn save_open_position(
+//     db: &DatabaseConnection,
+//     signature: &str,
+//     timestamp: i64,
+//     event: &OpenPositionEvent,
+// ) -> Rs<()> {
+//     // Implementation here
+//     Ok(())
+// }
+
+// #[instrument(skip(db))]
+// async fn save_settle_position(
+//     db: &DatabaseConnection,
+//     signature: &str,
+//     timestamp: i64,
+//     event: &SettlePositionEvent,
+// ) -> Rs<()> {
+//     // Implementation here
+//     Ok(())
+// }

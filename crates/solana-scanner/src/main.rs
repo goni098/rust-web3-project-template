@@ -8,14 +8,18 @@ use solana::bo::program::PROGRAM_ID;
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_commitment_config::CommitmentConfig;
 use solana_sdk::signature::Signature;
-use tracing::instrument;
+use tracing::{instrument, info, error};
 
 use crate::cursor::load_or_init_cursor;
 use crate::handler::consume_txs;
 use crate::signature::retrieve_txs;
 
+/// Maximum concurrent signature processing
 const CONCURRENCY_SIGNATURE: usize = 30;
+/// Commitment level for transaction finality
 const COMMITMENT: CommitmentConfig = CommitmentConfig::finalized();
+/// Interval between scan cycles
+const SCAN_INTERVAL_SECS: u64 = 6;
 
 mod cursor;
 mod handler;
@@ -39,18 +43,15 @@ async fn main() {
         .await
         .unwrap_or_else(|error| panic!("find cursor error {}", error));
 
-    tracing::info!("Events scanner started, program_id: {}", PROGRAM_ID);
-    tracing::info!("Starting from signature: {}", cursor);
+    info!(program_id = %PROGRAM_ID, "🚀 Events scanner started");
+    info!(signature = %cursor, "📍 Starting from signature");
 
     loop {
-        match scan(&db, &client, &mut cursor).await {
-            Ok(_) => {}
-            Err(error) => {
-                tracing::error!("scan error: {}", error);
-            }
+        if let Err(error) = scan(&db, &client, &mut cursor).await {
+            error!(error = %error, "❌ Scan error occurred");
         }
 
-        tokio::time::sleep(Duration::from_secs(6)).await;
+        tokio::time::sleep(Duration::from_secs(SCAN_INTERVAL_SECS)).await;
     }
 }
 

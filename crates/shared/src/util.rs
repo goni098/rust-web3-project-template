@@ -2,15 +2,20 @@ use alloy::primitives::U256;
 
 use crate::result::{AppErr, Rs};
 
+/// Trait for safe percentage calculations with overflow checking
 pub trait CheckedPercent: Sized {
     fn checked_percent(&self, percent: u8) -> Rs<Self>;
     fn checked_percent_f32(&self, percent: f32) -> Rs<Self>;
 }
 
+/// Trait for unchecked percentage calculations (may overflow)
 pub trait Percent {
     type Output;
 
+    /// Calculate percentage (0-100)
     fn percent(&self, percent: u8) -> Self::Output;
+
+    /// Calculate percentage with decimal precision
     fn percent_f32(&self, percent: f32) -> Self::Output;
 }
 

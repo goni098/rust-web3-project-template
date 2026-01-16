@@ -1,11 +1,15 @@
 use axum::{Router, response::Html, routing::get};
 use tower_http::cors::CorsLayer;
+use tracing::info;
 
 use crate::extractors::state::AppState;
 
 mod exception;
 mod extractors;
 mod handlers;
+
+/// Default server port
+const SERVER_PORT: u16 = 8080;
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
@@ -29,9 +33,13 @@ async fn main() -> Result<(), std::io::Error> {
         .layer(CorsLayer::permissive())
         .with_state(state);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await?;
+    let addr = format!("0.0.0.0:{}", SERVER_PORT);
+    let listener = tokio::net::TcpListener::bind(&addr).await?;
 
-    tracing::info!("🦀 server listening on {}", listener.local_addr()?);
+    info!(
+        addr = %listener.local_addr()?,
+        "🦀 Server is running"
+    );
 
     axum::serve(listener, app).await?;
 

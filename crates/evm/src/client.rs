@@ -21,12 +21,16 @@ use tower::ServiceBuilder;
 use tracing::instrument;
 use url::Url;
 
+/// Provider with chain ID filling
 pub type PublicClient = FillProvider<JoinFill<Identity, ChainIdFiller>, RootProvider>;
+
+/// Provider with wallet and chain ID filling
 pub type WalletClient = FillProvider<
     JoinFill<JoinFill<Identity, ChainIdFiller>, WalletFiller<EthereumWallet>>,
     RootProvider,
 >;
 
+/// Creates a public client for reading blockchain state
 pub fn create_public_client(chain: u64) -> PublicClient {
     let client = create_root_client(chain);
 
@@ -36,6 +40,11 @@ pub fn create_public_client(chain: u64) -> PublicClient {
         .connect_client(client)
 }
 
+/// Creates a wallet client for signing and sending transactions
+/// 
+/// # Arguments
+/// * `chain` - The chain ID to connect to
+/// * `signers` - List of private key signers to register
 pub fn create_wallet_client(chain: u64, signers: Vec<PrivateKeySigner>) -> WalletClient {
     let client = create_root_client(chain);
 
@@ -53,6 +62,7 @@ pub fn create_wallet_client(chain: u64, signers: Vec<PrivateKeySigner>) -> Walle
         .connect_client(client)
 }
 
+/// Trait for sending EIP-1559 transactions with automatic gas estimation
 pub trait SendEip1559 {
     fn send_eip1559_tx(
         &self,
@@ -116,27 +126,31 @@ impl SendEip1559 for WalletClient {
         tx: TransactionRequest,
         sender: Option<Address>,
     ) -> Rs<TxHash> {
-        let mut attemp_to_send = 0;
+        const MAX_ATTEMPTS: u8 = 3;
+        const TX_TIMEOUT_SECS: u64 = 90;
+        const RETRY_DELAY_SECS: u64 = 2;
+        
+        let mut attempt = 0;
 
         loop {
             let result = tokio::time::timeout(
-                Duration::from_secs(90),
+                Duration::from_secs(TX_TIMEOUT_SECS),
                 self.send_eip1559_tx(tx.clone(), 12, sender),
             )
             .await
-            .map_err(|_| AppErr::custom(format!("Execute tx timeout from chain {:?}", tx.chain_id)))
+            .map_err(|_| AppErr::custom(format!("Transaction timeout on chain {:?}", tx.chain_id)))
             .and_then(convert::identity);
 
             match result {
                 Ok(tx_hash) => return Ok(tx_hash),
                 Err(error) => {
-                    attemp_to_send += 1;
+                    attempt += 1;
 
-                    if attemp_to_send >= 3 {
+                    if attempt >= MAX_ATTEMPTS {
                         return Err(error);
                     }
 
-                    tokio::time::sleep(Duration::from_secs(2)).await;
+                    tokio::time::sleep(Duration::from_secs(RETRY_DELAY_SECS)).await;
                 }
             }
         }

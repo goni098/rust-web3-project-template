@@ -55,7 +55,11 @@ async fn handle_tx(
 
         let events = BoEvent::from_logs(&logs);
 
-        dbg!(&events);
+        tracing::debug!(
+            signature = %tx.signature,
+            event_count = events.len(),
+            "Found events: {:#?}", events
+        );
 
         repositories::signatures::upsert(db, signature.to_string(), timestamp).await?;
     }
