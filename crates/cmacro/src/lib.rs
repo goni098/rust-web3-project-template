@@ -99,13 +99,16 @@ pub fn anchor_events(attr: TokenStream, item: TokenStream) -> TokenStream {
         #(#statics)*
 
         impl #enum_name {
-            pub fn from_logs(logs: &[String]) -> Vec<Self> {
+            pub fn from_logs<T, I>(logs: T) -> Vec<Self>
+            where
+                T: IntoIterator<Item = I>,
+                I: AsRef<str>, {
                 use borsh::BorshDeserialize;
                 use base64::{Engine, prelude::BASE64_STANDARD};
 
                 logs.into_iter()
                     .filter_map(|log| {
-                        let data = log.strip_prefix("Program data: ")?;
+                        let data = log.as_ref().strip_prefix("Program data: ")?;
                         let bytes = BASE64_STANDARD.decode(data).ok()?;
                         let (disc, body) = bytes.split_at(#discriminator as usize);
 

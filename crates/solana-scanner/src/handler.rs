@@ -53,7 +53,7 @@ async fn handle_tx(
     {
         let timestamp = txn.block_time.unwrap_or_default();
 
-        let events = BoEvent::from_logs(&logs);
+        let events = BoEvent::from_logs(logs);
 
         tracing::debug!(
             signature = %tx.signature,

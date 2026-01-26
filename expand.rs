@@ -703,12 +703,16 @@ pub mod bo {
             75u8, 100u8, 92u8, 189u8, 245u8, 116u8, 252u8, 221u8,
         ];
         impl BoEvent {
-            pub fn from_logs(logs: &[String]) -> Vec<Self> {
+            pub fn from_logs<T, I>(logs: T) -> Vec<Self>
+            where
+                T: IntoIterator<Item = I>,
+                I: AsRef<str>,
+            {
                 use borsh::BorshDeserialize;
                 use base64::{Engine, prelude::BASE64_STANDARD};
                 logs.into_iter()
                     .filter_map(|log| {
-                        let data = log.strip_prefix("Program data: ")?;
+                        let data = log.as_ref().strip_prefix("Program data: ")?;
                         let bytes = BASE64_STANDARD.decode(data).ok()?;
                         let (disc, body) = bytes.split_at(8u8 as usize);
                         match disc {
@@ -762,12 +766,35 @@ pub mod fetcher {
     use solana_client::nonblocking::rpc_client::RpcClient;
     use solana_sdk::pubkey::Pubkey;
     use crate::DISCRIMINATOR_SIZE;
+    /// Fetches and deserializes a Solana account, skipping the 8-byte discriminator
+    ///
+    /// # Arguments
+    /// * `client` - RPC client for querying Solana
+    /// * `pubkey` - Public key of the account to fetch
+    ///
+    /// # Returns
+    /// The deserialized account data
     pub async fn fetch_account<T: BorshDeserialize>(
         client: &RpcClient,
         pubkey: &Pubkey,
     ) -> Rs<T> {
         let data = client.get_account_data(pubkey).await?;
-        let buf: &mut &[u8] = &mut &data.as_slice()[DISCRIMINATOR_SIZE..];
+        if data.len() < DISCRIMINATOR_SIZE {
+            return Err(
+                shared::result::AppErr::custom(
+                    ::alloc::__export::must_use({
+                        ::alloc::fmt::format(
+                            format_args!(
+                                "Account data too short: expected at least {0} bytes, got {1}",
+                                DISCRIMINATOR_SIZE,
+                                data.len(),
+                            ),
+                        )
+                    }),
+                ),
+            );
+        }
+        let buf: &mut &[u8] = &mut &data[DISCRIMINATOR_SIZE..];
         let acc = T::deserialize(buf)?;
         Ok(acc)
     }
