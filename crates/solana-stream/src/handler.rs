@@ -45,57 +45,11 @@ pub async fn handle_response_log(
 #[instrument(skip_all)]
 async fn handle_events(
     _db: &DatabaseConnection,
-    signature: &str,
-    timestamp: i64,
+    _signature: &str,
+    _timestamp: i64,
     events: Vec<BoEvent>,
 ) -> Rs<()> {
-    for event in events {
-        match event {
-            BoEvent::OpenPosition(ref data) => {
-                info!(
-                    signature = %signature,
-                    timestamp = timestamp,
-                    "Processing OpenPosition: {:#?}",
-                    data
-                );
-                // TODO: Persist to database
-                // save_open_position(db, signature, timestamp, data).await?;
-            }
-            BoEvent::SettlePosition(ref data) => {
-                info!(
-                    signature = %signature,
-                    timestamp = timestamp,
-                    "Processing SettlePosition: {:#?}",
-                    data
-                );
-                // TODO: Persist to database
-                // save_settle_position(db, signature, timestamp, data).await?;
-            }
-        }
-    }
+    info!("events: {}", events.len());
 
     Ok(())
 }
-
-// Future database persistence functions
-// #[instrument(skip(db))]
-// async fn save_open_position(
-//     db: &DatabaseConnection,
-//     signature: &str,
-//     timestamp: i64,
-//     event: &OpenPositionEvent,
-// ) -> Rs<()> {
-//     // Implementation here
-//     Ok(())
-// }
-
-// #[instrument(skip(db))]
-// async fn save_settle_position(
-//     db: &DatabaseConnection,
-//     signature: &str,
-//     timestamp: i64,
-//     event: &SettlePositionEvent,
-// ) -> Rs<()> {
-//     // Implementation here
-//     Ok(())
-// }

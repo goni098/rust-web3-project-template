@@ -1,4 +1,3 @@
-use database::repositories;
 use database::sea_orm::DatabaseConnection;
 use futures_util::future::join_all;
 use shared::result::Rs;
@@ -32,7 +31,7 @@ pub async fn consume_txs(
 #[instrument(skip_all)]
 async fn handle_tx(
     client: &RpcClient,
-    db: &DatabaseConnection,
+    _db: &DatabaseConnection,
     tx: &RpcConfirmedTransactionStatusWithSignature,
 ) -> Rs<()> {
     tracing::info!("processing signature {}", tx.signature);
@@ -51,17 +50,9 @@ async fn handle_tx(
     if let Some(meta) = txn.transaction.meta
         && let OptionSerializer::Some(logs) = meta.log_messages
     {
-        let timestamp = txn.block_time.unwrap_or_default();
+        let _timestamp = txn.block_time.unwrap_or_default();
 
-        let events = BoEvent::from_logs(logs);
-
-        tracing::debug!(
-            signature = %tx.signature,
-            event_count = events.len(),
-            "Found events: {:#?}", events
-        );
-
-        repositories::signatures::upsert(db, signature.to_string(), timestamp).await?;
+        let _events = BoEvent::from_logs(logs);
     }
 
     Ok(())
