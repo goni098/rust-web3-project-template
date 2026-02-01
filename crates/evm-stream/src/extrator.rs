@@ -1,5 +1,5 @@
 use alloy::rpc::types::Log;
-use fastwebsockets::{Frame, OpCode, Payload, WebSocketError};
+use fastwebsockets::{Frame, OpCode, WebSocketError};
 use serde::Deserialize;
 use serde_json::Value;
 use ws_client::FrameCollector;
@@ -27,14 +27,10 @@ pub async fn extract_frame(
             Ok(log)
         }
         OpCode::Ping => {
-            ws.write_frame(Frame::pong(Payload::Borrowed(&[]))).await?;
-            tracing::info!("pong!");
+            ws.write_frame(Frame::pong(frame.payload)).await?;
             Ok(None)
         }
-        OpCode::Pong => {
-            tracing::info!("->pong");
-            Ok(None)
-        }
+        OpCode::Close => Err(WebSocketError::ConnectionClosed),
         _ => Ok(None),
     }
 }

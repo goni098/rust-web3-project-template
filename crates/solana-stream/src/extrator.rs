@@ -1,8 +1,8 @@
-use fastwebsockets::{Frame, OpCode, Payload, WebSocketError};
+use fastwebsockets::{Frame, OpCode, WebSocketError};
 use serde::Deserialize;
 use serde_json::Value;
 use solana_client::rpc_response::{Response, RpcLogsResponse};
-use tracing::{instrument, debug};
+use tracing::instrument;
 use ws_client::FrameCollector;
 
 #[derive(Deserialize)]
@@ -30,14 +30,10 @@ pub async fn extract_frame(
             Ok(log)
         }
         OpCode::Ping => {
-            ws.write_frame(Frame::pong(Payload::Borrowed(&[]))).await?;
-            debug!("🏓 Pong sent");
+            ws.write_frame(Frame::pong(frame.payload)).await?;
             Ok(None)
         }
-        OpCode::Pong => {
-            debug!("✅ Pong received");
-            Ok(None)
-        }
+        OpCode::Close => Err(WebSocketError::ConnectionClosed),
         _ => Ok(None),
     }
 }

@@ -6,7 +6,7 @@ use solana_sdk::signature::Signature;
 use tracing::{debug, info, instrument, warn};
 
 /// Processes a Solana log response and extracts/handles events
-#[instrument(skip(db), fields(signature = %res.value.signature))]
+#[instrument(skip_all)]
 pub async fn handle_response_log(
     db: &DatabaseConnection,
     res: Response<RpcLogsResponse>,
@@ -20,12 +20,8 @@ pub async fn handle_response_log(
     }
 
     // Skip failed transactions
-    if let Some(ref err) = res.value.err {
-        warn!(
-            signature = %signature,
-            error = ?err,
-            "Skipping failed transaction"
-        );
+    if res.value.err.is_some() {
+        warn!("Skipping failed transaction,signature {}", signature);
         return Ok(None);
     }
 
@@ -33,15 +29,11 @@ pub async fn handle_response_log(
     let events = BoEvent::from_logs(&res.value.logs);
 
     if events.is_empty() {
-        debug!(signature = %signature, "No events found in transaction");
+        debug!("No events found in transaction, signature {}", signature);
         return Ok(None);
     }
 
-    debug!(
-        signature = %signature,
-        event_count = events.len(),
-        "Found events: {:#?}", events
-    );
+    debug!("Found {} events: {:#?}", events.len(), events);
 
     // Process events
     handle_events(db, &signature, Utc::now().timestamp(), events).await?;
@@ -50,7 +42,7 @@ pub async fn handle_response_log(
 }
 
 /// Processes individual blockchain events
-#[instrument(skip(_db), fields(signature = %signature, event_count = events.len()))]
+#[instrument(skip_all)]
 async fn handle_events(
     _db: &DatabaseConnection,
     signature: &str,

@@ -15,3 +15,4 @@ tracing = { workspace = true }
 ws-client = { path = "../ws-client" }
 shared = { path = "../shared" }
 database = { path = "../database" }
+evm = { path = "../evm" }
