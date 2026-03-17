@@ -1,0 +1,15 @@
+[package]
+name = "evm-scanner"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { workspace = true }
+alloy = { workspace = true }
+futures-util = { workspace = true }
+tracing = { workspace = true }
+
+evm-lib = { path = "../lib" }
+evm-stream = { path = "../stream" }
+shared = { path = "../../crates/shared" }
+database = { path = "../../crates/database" }

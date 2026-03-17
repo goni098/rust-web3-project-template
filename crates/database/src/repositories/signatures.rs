@@ -1,8 +1,10 @@
 use sea_orm::{ActiveValue::Set, DatabaseConnection, EntityTrait};
 use shared::result::Rs;
+use tracing::instrument;
 
 use crate::entities::signature;
 
+#[instrument(skip_all)]
 pub async fn upsert(db: &DatabaseConnection, signature: String, ts: i64) -> Rs<()> {
     signature::Entity::insert(signature::ActiveModel {
         id: Default::default(),

@@ -13,8 +13,8 @@ pub enum Env {
 /// Loads environment variables from .env file if present
 pub fn load() {
     match dotenv::dotenv() {
-        Ok(path) => println!("✓ Loaded .env file from: {}", path.display()),
-        Err(_) => println!("⚠ No .env file found, using system environment variables"),
+        Ok(path) => println!("Loaded .env file from: {}", path.display()),
+        Err(_) => println!("No .env file found, using system environment variables"),
     }
 }
 
@@ -22,7 +22,7 @@ pub fn load() {
 pub fn read(env: Env) -> String {
     let var = env.key();
     std::env::var(var.as_ref())
-        .unwrap_or_else(|_| panic!("❌ Missing required environment variable: {}", var))
+        .unwrap_or_else(|_| panic!("Missing required environment variable: {}", var))
 }
 
 impl Env {

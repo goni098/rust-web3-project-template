@@ -1,0 +1,13 @@
+[package]
+name = "evm-lib"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+alloy = { workspace = true }
+tower = { workspace = true }
+url = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+
+shared = { path = "../../crates/shared" }

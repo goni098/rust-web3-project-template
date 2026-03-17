@@ -1,0 +1,19 @@
+[package]
+name = "solana-stream"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { workspace = true }
+serde_json = { workspace = true }
+fastwebsockets = { workspace = true }
+solana-client = { workspace = true }
+serde = { workspace = true }
+tracing = { workspace = true }
+hyper = { workspace = true }
+solana-sdk = { workspace = true }
+
+ws-client = { path = "../../crates/ws-client" }
+database = { path = "../../crates/database" }
+shared = { path = "../../crates/shared" }
+sol-lib = { path = "../lib" }

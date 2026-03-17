@@ -19,7 +19,7 @@ async fn main() -> Result<(), std::io::Error> {
     let state = AppState::new().await;
 
     let app = Router::new()
-        .route("/", get(async || "🦀 hello !"))
+        .route("/", get(async || "hello !"))
         .route(
             "/docs/openapi.yml",
             get(async || include_str!("../docs/openapi.yml")),
@@ -36,10 +36,7 @@ async fn main() -> Result<(), std::io::Error> {
     let addr = format!("0.0.0.0:{}", SERVER_PORT);
     let listener = tokio::net::TcpListener::bind(&addr).await?;
 
-    info!(
-        addr = %listener.local_addr()?,
-        "🦀 Server is running"
-    );
+    info!("Server is running {}", listener.local_addr()?);
 
     axum::serve(listener, app).await?;
 

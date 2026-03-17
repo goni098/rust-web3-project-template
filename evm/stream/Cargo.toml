@@ -1,0 +1,18 @@
+[package]
+name = "evm-stream"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tokio = { workspace = true }
+hyper = { workspace = true }
+fastwebsockets = { workspace = true }
+alloy = { workspace = true }
+serde_json = { workspace = true }
+serde = { workspace = true }
+tracing = { workspace = true }
+
+ws-client = { path = "../../crates/ws-client" }
+shared = { path = "../../crates/shared" }
+database = { path = "../../crates/database" }
+evm-lib = { path = "../lib" }

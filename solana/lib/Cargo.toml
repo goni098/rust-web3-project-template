@@ -1,0 +1,16 @@
+[package]
+name = "sol-lib"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+solana-sdk = { workspace = true }
+borsh = { workspace = true }
+solana-client = { workspace = true }
+base64 = { workspace = true }
+solana-system-interface = { workspace = true }
+spl-associated-token-account-interface = { workspace = true }
+strum = { workspace = true }
+anchor-parser = { workspace = true }
+
+shared = { path = "../../crates/shared" }
