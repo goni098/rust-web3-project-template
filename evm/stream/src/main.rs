@@ -90,7 +90,7 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
                     evm_stream::handle_log(db, &log)
                         .await
                         .unwrap_or_else(|error| {
-                            tracing::error!("handle log error {}", error);
+                            error.trace("handle log error");
                         });
                 }
             }

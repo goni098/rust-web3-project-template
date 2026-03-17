@@ -89,7 +89,7 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
                     match handle_response_log(db, res).await {
                         Ok(Some(signature)) => info!("Processed transaction {}", signature),
                         Ok(None) => {},
-                        Err(error) => error!("Failed to handle log {}", error),
+                        Err(error) => error.trace("Failed to handle log"),
                     }
                 }
             }

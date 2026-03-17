@@ -8,7 +8,7 @@ use sol_lib::pumpfun;
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_commitment_config::CommitmentConfig;
 use solana_sdk::signature::Signature;
-use tracing::{error, info};
+use tracing::info;
 
 use crate::cursor::load_or_init_cursor;
 use crate::handler::consume_txs;
@@ -49,7 +49,7 @@ async fn main() {
 
     loop {
         if let Err(error) = scan(&db, &client, &mut cursor).await {
-            error!("Scan error {}", error);
+            error.trace("Scan failed");
         }
 
         tokio::time::sleep(Duration::from_secs(SCAN_INTERVAL_SECS)).await;

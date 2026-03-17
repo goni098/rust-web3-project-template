@@ -4,52 +4,55 @@ type Location = &'static core::panic::Location<'static>;
 
 #[derive(Debug, thiserror::Error)]
 pub enum AppErr {
-    #[error("I/O error: {source}\n  at {location}")]
+    #[error("I/O: {source}")]
     Io {
         source: std::io::Error,
         location: Location,
     },
 
     #[error("Custom: {message}")]
-    Custom { message: Cow<'static, str> },
+    Custom {
+        message: Cow<'static, str>,
+        location: Location,
+    },
 
-    #[error("ParseInt error: {source}\n  at {location}")]
+    #[error("ParseInt: {source}")]
     ParseInt {
         source: ParseIntError,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("Database: {source}")]
     Database {
         source: sea_orm::error::DbErr,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("EvmRpc: {source}")]
     EvmRpc {
         source: alloy::transports::RpcError<alloy::transports::TransportErrorKind>,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("SolTypes: {source}")]
     SolTypes {
         source: alloy::sol_types::Error,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("WaitReceiptTx: {source}")]
     WaitReceiptTx {
         source: alloy::providers::PendingTransactionError,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("SolanaClient: {source}")]
     SolanaClient {
         source: solana_client::client_error::ClientError,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("ParseSignature: {source}")]
     ParseSignature {
         source: solana_sdk::signature::ParseSignatureError,
         location: Location,
@@ -85,9 +88,30 @@ impl_from_tracked!(solana_sdk::signature::ParseSignatureError, ParseSignature);
 pub type Rs<T> = Result<T, AppErr>;
 
 impl AppErr {
+    pub fn location(&self) -> Location {
+        match self {
+            AppErr::Custom { location, .. } => location,
+            AppErr::Database { location, .. } => location,
+            AppErr::EvmRpc { location, .. } => location,
+            AppErr::Io { location, .. } => location,
+            AppErr::ParseInt { location, .. } => location,
+            AppErr::ParseSignature { location, .. } => location,
+            AppErr::SolTypes { location, .. } => location,
+            AppErr::SolanaClient { location, .. } => location,
+            AppErr::WaitReceiptTx { location, .. } => location,
+        }
+    }
+
+    pub fn trace<C: AsRef<str>>(&self, ctx: C) {
+        let location = self.location();
+        tracing::error!("{} >> {}\nTrace: {}", ctx.as_ref(), self, location);
+    }
+
+    #[track_caller]
     pub fn custom<E: Into<Cow<'static, str>>>(message: E) -> AppErr {
         AppErr::Custom {
             message: message.into(),
+            location: core::panic::Location::caller(),
         }
     }
 }

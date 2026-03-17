@@ -70,12 +70,7 @@ async fn bootstrap(chain: u64) -> Rs<()> {
                 filter = filter.from_block(next);
             }
             Err(error) => {
-                tracing::error!(
-                    "scan from {} to {} failed {:#?}",
-                    filter.get_from_block().unwrap_or_default(),
-                    filter.get_to_block().unwrap_or_default(),
-                    error
-                );
+                error.trace("Scan failed");
             }
         };
 

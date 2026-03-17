@@ -9,61 +9,55 @@ type Location = &'static core::panic::Location<'static>;
 #[allow(dead_code)]
 #[derive(thiserror::Error, Debug)]
 pub enum HttpException {
-    #[error("{source}\n  at {location}")]
+    #[error("Validation: {source}")]
     Validation {
         source: validator::ValidationErrors,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("PathRejection: {source}")]
     PathRejection {
         source: axum::extract::rejection::PathRejection,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("FormRejection: {source}")]
     FormRejection {
         source: axum::extract::rejection::FormRejection,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("QueryRejection: {source}")]
     QueryRejection {
         source: axum::extract::rejection::QueryRejection,
         location: Location,
     },
 
-    #[error("{source}\n  at {location}")]
+    #[error("BodyRejection: {source}")]
     BodyRejection {
         source: axum::extract::rejection::JsonRejection,
         location: Location,
     },
 
-    #[error("{message}\n  at {location}")]
+    #[error("BadRequest: {message}")]
     BadRequest {
         message: Cow<'static, str>,
         location: Location,
     },
 
-    #[error("{message}\n  at {location}")]
+    #[error("Unauthorized: {message}")]
     Unauthorized {
         message: Cow<'static, str>,
         location: Location,
     },
 
-    #[error("{message}\n  at {location}")]
+    #[error("message: {message}")]
     Internal {
         message: Cow<'static, str>,
         location: Location,
     },
 
-    #[error("{message}\n  at {location}")]
-    Custom {
-        message: Cow<'static, str>,
-        location: Location,
-    },
-
-    #[error("{source}\n  at {location}")]
+    #[error("ParseInt: {source}")]
     ParseInt {
         source: ParseIntError,
         location: Location,
@@ -98,6 +92,26 @@ impl_from_tracked!(axum::extract::rejection::JsonRejection, BodyRejection);
 impl_from_tracked!(ParseIntError, ParseInt);
 
 impl HttpException {
+    fn location(&self) -> Location {
+        match self {
+            Self::Validation { location, .. } => location,
+            Self::PathRejection { location, .. } => location,
+            Self::FormRejection { location, .. } => location,
+            Self::QueryRejection { location, .. } => location,
+            Self::BodyRejection { location, .. } => location,
+            Self::BadRequest { location, .. } => location,
+            Self::Unauthorized { location, .. } => location,
+            Self::Internal { location, .. } => location,
+            Self::ParseInt { location, .. } => location,
+            Self::App(error) => error.location(),
+        }
+    }
+
+    fn trace(&self) {
+        let location = self.location();
+        tracing::error!("{}\nTrace: {}", self, location);
+    }
+
     #[track_caller]
     pub fn internal<E: ToString>(error: E) -> Self {
         Self::Internal {
@@ -135,7 +149,7 @@ impl IntoResponse for HttpException {
             | Self::Validation { .. } => StatusCode::BAD_REQUEST,
             Self::Unauthorized { .. } => StatusCode::UNAUTHORIZED,
             _ => {
-                tracing::error!("{}", self);
+                self.trace();
                 StatusCode::INTERNAL_SERVER_ERROR
             }
         };
