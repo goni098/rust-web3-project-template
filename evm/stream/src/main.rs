@@ -50,8 +50,6 @@ async fn main() {
 async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketError> {
     let mut ping_clock = tokio::time::interval(Duration::from_secs(PING_INTERVAL_SECS));
 
-    ping_clock.tick().await;
-
     let mut ws = ws_client::connect(uri).await?;
     tracing::info!("WebSocket connected {}", uri);
 

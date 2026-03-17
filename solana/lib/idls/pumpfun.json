@@ -23,11 +23,16 @@
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "mint" },
+				{
+					"name": "mint"
+				},
 				{
 					"name": "bonding_curve",
 					"writable": true,
@@ -39,7 +44,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -57,29 +65,51 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
-			"args": [{ "name": "creator", "type": "pubkey" }]
+			"args": [
+				{
+					"name": "creator",
+					"type": "pubkey"
+				}
+			]
 		},
 		{
 			"name": "admin_set_idl_authority",
 			"discriminator": [8, 217, 96, 231, 144, 104, 192, 5],
 			"accounts": [
-				{ "name": "authority", "signer": true, "relations": ["global"] },
+				{
+					"name": "authority",
+					"signer": true,
+					"relations": ["global"]
+				},
 				{
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "idl_account", "writable": true },
+				{
+					"name": "idl_account",
+					"writable": true
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
 				},
-				{ "name": "program_signer", "pda": { "seeds": [] } },
+				{
+					"name": "program_signer",
+					"pda": {
+						"seeds": []
+					}
+				},
 				{
 					"name": "event_authority",
 					"pda": {
@@ -94,9 +124,16 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
-			"args": [{ "name": "idl_authority", "type": "pubkey" }]
+			"args": [
+				{
+					"name": "idl_authority",
+					"type": "pubkey"
+				}
+			]
 		},
 		{
 			"name": "admin_update_token_incentives",
@@ -112,7 +149,10 @@
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
@@ -131,15 +171,26 @@
 						]
 					}
 				},
-				{ "name": "mint" },
+				{
+					"name": "mint"
+				},
 				{
 					"name": "global_incentive_token_account",
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "global_volume_accumulator" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "global_volume_accumulator"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -159,7 +210,9 @@
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
 				},
-				{ "name": "token_program" },
+				{
+					"name": "token_program"
+				},
 				{
 					"name": "event_authority",
 					"pda": {
@@ -174,14 +227,31 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": [
-				{ "name": "start_time", "type": "i64" },
-				{ "name": "end_time", "type": "i64" },
-				{ "name": "seconds_in_a_day", "type": "i64" },
-				{ "name": "day_number", "type": "u64" },
-				{ "name": "pump_token_supply_per_day", "type": "u64" }
+				{
+					"name": "start_time",
+					"type": "i64"
+				},
+				{
+					"name": "end_time",
+					"type": "i64"
+				},
+				{
+					"name": "seconds_in_a_day",
+					"type": "i64"
+				},
+				{
+					"name": "day_number",
+					"type": "u64"
+				},
+				{
+					"name": "pump_token_supply_per_day",
+					"type": "u64"
+				}
 			]
 		},
 		{
@@ -193,12 +263,20 @@
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "fee_recipient", "writable": true },
-				{ "name": "mint" },
+				{
+					"name": "fee_recipient",
+					"writable": true
+				},
+				{
+					"name": "mint"
+				},
 				{
 					"name": "bonding_curve",
 					"writable": true,
@@ -210,7 +288,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -219,9 +300,18 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "bonding_curve" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "bonding_curve"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -233,13 +323,22 @@
 						}
 					}
 				},
-				{ "name": "associated_user", "writable": true },
-				{ "name": "user", "writable": true, "signer": true },
+				{
+					"name": "associated_user",
+					"writable": true
+				},
+				{
+					"name": "user",
+					"writable": true,
+					"signer": true
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
 				},
-				{ "name": "token_program" },
+				{
+					"name": "token_program"
+				},
 				{
 					"name": "creator_vault",
 					"writable": true,
@@ -303,7 +402,10 @@
 									99, 99, 117, 109, 117, 108, 97, 116, 111, 114
 								]
 							},
-							{ "kind": "account", "path": "user" }
+							{
+								"kind": "account",
+								"path": "user"
+							}
 						]
 					}
 				},
@@ -324,7 +426,10 @@
 								]
 							}
 						],
-						"program": { "kind": "account", "path": "fee_program" }
+						"program": {
+							"kind": "account",
+							"path": "fee_program"
+						}
 					}
 				},
 				{
@@ -333,11 +438,21 @@
 				}
 			],
 			"args": [
-				{ "name": "amount", "type": "u64" },
-				{ "name": "max_sol_cost", "type": "u64" },
+				{
+					"name": "amount",
+					"type": "u64"
+				},
+				{
+					"name": "max_sol_cost",
+					"type": "u64"
+				},
 				{
 					"name": "track_volume",
-					"type": { "defined": { "name": "OptionBool" } }
+					"type": {
+						"defined": {
+							"name": "OptionBool"
+						}
+					}
 				}
 			]
 		},
@@ -376,12 +491,20 @@
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "fee_recipient", "writable": true },
-				{ "name": "mint" },
+				{
+					"name": "fee_recipient",
+					"writable": true
+				},
+				{
+					"name": "mint"
+				},
 				{
 					"name": "bonding_curve",
 					"writable": true,
@@ -393,7 +516,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -402,9 +528,18 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "bonding_curve" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "bonding_curve"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -416,13 +551,22 @@
 						}
 					}
 				},
-				{ "name": "associated_user", "writable": true },
-				{ "name": "user", "writable": true, "signer": true },
+				{
+					"name": "associated_user",
+					"writable": true
+				},
+				{
+					"name": "user",
+					"writable": true,
+					"signer": true
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
 				},
-				{ "name": "token_program" },
+				{
+					"name": "token_program"
+				},
 				{
 					"name": "creator_vault",
 					"writable": true,
@@ -486,7 +630,10 @@
 									99, 99, 117, 109, 117, 108, 97, 116, 111, 114
 								]
 							},
-							{ "kind": "account", "path": "user" }
+							{
+								"kind": "account",
+								"path": "user"
+							}
 						]
 					}
 				},
@@ -507,7 +654,10 @@
 								]
 							}
 						],
-						"program": { "kind": "account", "path": "fee_program" }
+						"program": {
+							"kind": "account",
+							"path": "fee_program"
+						}
 					}
 				},
 				{
@@ -516,27 +666,100 @@
 				}
 			],
 			"args": [
-				{ "name": "spendable_sol_in", "type": "u64" },
-				{ "name": "min_tokens_out", "type": "u64" },
+				{
+					"name": "spendable_sol_in",
+					"type": "u64"
+				},
+				{
+					"name": "min_tokens_out",
+					"type": "u64"
+				},
 				{
 					"name": "track_volume",
-					"type": { "defined": { "name": "OptionBool" } }
+					"type": {
+						"defined": {
+							"name": "OptionBool"
+						}
+					}
 				}
 			]
+		},
+		{
+			"name": "claim_cashback",
+			"discriminator": [37, 58, 35, 126, 190, 53, 228, 197],
+			"accounts": [
+				{
+					"name": "user",
+					"writable": true
+				},
+				{
+					"name": "user_volume_accumulator",
+					"writable": true,
+					"pda": {
+						"seeds": [
+							{
+								"kind": "const",
+								"value": [
+									117, 115, 101, 114, 95, 118, 111, 108, 117, 109, 101, 95, 97,
+									99, 99, 117, 109, 117, 108, 97, 116, 111, 114
+								]
+							},
+							{
+								"kind": "account",
+								"path": "user"
+							}
+						]
+					}
+				},
+				{
+					"name": "system_program",
+					"address": "11111111111111111111111111111111"
+				},
+				{
+					"name": "event_authority",
+					"pda": {
+						"seeds": [
+							{
+								"kind": "const",
+								"value": [
+									95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+									114, 105, 116, 121
+								]
+							}
+						]
+					}
+				},
+				{
+					"name": "program",
+					"address": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
+				}
+			],
+			"args": []
 		},
 		{
 			"name": "claim_token_incentives",
 			"discriminator": [16, 4, 71, 28, 204, 1, 40, 27],
 			"accounts": [
-				{ "name": "user" },
+				{
+					"name": "user"
+				},
 				{
 					"name": "user_ata",
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "user" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "user"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -567,9 +790,18 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "global_volume_accumulator" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "global_volume_accumulator"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -593,12 +825,20 @@
 									99, 99, 117, 109, 117, 108, 97, 116, 111, 114
 								]
 							},
-							{ "kind": "account", "path": "user" }
+							{
+								"kind": "account",
+								"path": "user"
+							}
 						]
 					}
 				},
-				{ "name": "mint", "relations": ["global_volume_accumulator"] },
-				{ "name": "token_program" },
+				{
+					"name": "mint",
+					"relations": ["global_volume_accumulator"]
+				},
+				{
+					"name": "token_program"
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
@@ -625,7 +865,11 @@
 					"name": "program",
 					"address": "6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P"
 				},
-				{ "name": "payer", "writable": true, "signer": true }
+				{
+					"name": "payer",
+					"writable": true,
+					"signer": true
+				}
 			],
 			"args": []
 		},
@@ -633,7 +877,11 @@
 			"name": "close_user_volume_accumulator",
 			"discriminator": [249, 69, 164, 218, 150, 103, 84, 138],
 			"accounts": [
-				{ "name": "user", "writable": true, "signer": true },
+				{
+					"name": "user",
+					"writable": true,
+					"signer": true
+				},
 				{
 					"name": "user_volume_accumulator",
 					"writable": true,
@@ -646,7 +894,10 @@
 									99, 99, 117, 109, 117, 108, 97, 116, 111, 114
 								]
 							},
-							{ "kind": "account", "path": "user" }
+							{
+								"kind": "account",
+								"path": "user"
+							}
 						]
 					}
 				},
@@ -664,7 +915,9 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
 		},
@@ -675,7 +928,10 @@
 			],
 			"discriminator": [20, 22, 86, 123, 198, 28, 219, 132],
 			"accounts": [
-				{ "name": "creator", "writable": true },
+				{
+					"name": "creator",
+					"writable": true
+				},
 				{
 					"name": "creator_vault",
 					"writable": true,
@@ -687,7 +943,10 @@
 									99, 114, 101, 97, 116, 111, 114, 45, 118, 97, 117, 108, 116
 								]
 							},
-							{ "kind": "account", "path": "creator" }
+							{
+								"kind": "account",
+								"path": "creator"
+							}
 						]
 					}
 				},
@@ -709,7 +968,9 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
 		},
@@ -718,7 +979,11 @@
 			"docs": ["Creates a new coin and bonding curve."],
 			"discriminator": [24, 30, 200, 40, 5, 28, 7, 119],
 			"accounts": [
-				{ "name": "mint", "writable": true, "signer": true },
+				{
+					"name": "mint",
+					"writable": true,
+					"signer": true
+				},
 				{
 					"name": "mint_authority",
 					"pda": {
@@ -744,7 +1009,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -753,7 +1021,10 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "bonding_curve" },
+							{
+								"kind": "account",
+								"path": "bonding_curve"
+							},
 							{
 								"kind": "const",
 								"value": [
@@ -762,7 +1033,10 @@
 									245, 133, 126, 255, 0, 169
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -778,7 +1052,10 @@
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
@@ -803,12 +1080,22 @@
 									209, 188, 3, 248, 41, 70
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
-						"program": { "kind": "account", "path": "mpl_token_metadata" }
+						"program": {
+							"kind": "account",
+							"path": "mpl_token_metadata"
+						}
 					}
 				},
-				{ "name": "user", "writable": true, "signer": true },
+				{
+					"name": "user",
+					"writable": true,
+					"signer": true
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
@@ -839,13 +1126,27 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": [
-				{ "name": "name", "type": "string" },
-				{ "name": "symbol", "type": "string" },
-				{ "name": "uri", "type": "string" },
-				{ "name": "creator", "type": "pubkey" }
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "symbol",
+					"type": "string"
+				},
+				{
+					"name": "uri",
+					"type": "string"
+				},
+				{
+					"name": "creator",
+					"type": "pubkey"
+				}
 			]
 		},
 		{
@@ -853,7 +1154,11 @@
 			"docs": ["Creates a new spl-22 coin and bonding curve."],
 			"discriminator": [214, 144, 76, 236, 95, 139, 49, 180],
 			"accounts": [
-				{ "name": "mint", "writable": true, "signer": true },
+				{
+					"name": "mint",
+					"writable": true,
+					"signer": true
+				},
 				{
 					"name": "mint_authority",
 					"pda": {
@@ -879,7 +1184,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -888,9 +1196,18 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "bonding_curve" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "bonding_curve"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -906,11 +1223,18 @@
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "user", "writable": true, "signer": true },
+				{
+					"name": "user",
+					"writable": true,
+					"signer": true
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
@@ -980,7 +1304,10 @@
 									109, 97, 121, 104, 101, 109, 45, 115, 116, 97, 116, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -992,7 +1319,10 @@
 						}
 					}
 				},
-				{ "name": "mayhem_token_vault", "writable": true },
+				{
+					"name": "mayhem_token_vault",
+					"writable": true
+				},
 				{
 					"name": "event_authority",
 					"pda": {
@@ -1007,14 +1337,39 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": [
-				{ "name": "name", "type": "string" },
-				{ "name": "symbol", "type": "string" },
-				{ "name": "uri", "type": "string" },
-				{ "name": "creator", "type": "pubkey" },
-				{ "name": "is_mayhem_mode", "type": "bool" }
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "symbol",
+					"type": "string"
+				},
+				{
+					"name": "uri",
+					"type": "string"
+				},
+				{
+					"name": "creator",
+					"type": "pubkey"
+				},
+				{
+					"name": "is_mayhem_mode",
+					"type": "bool"
+				},
+				{
+					"name": "is_cashback_enabled",
+					"type": {
+						"defined": {
+							"name": "OptionBool"
+						}
+					}
+				}
 			]
 		},
 		{
@@ -1026,7 +1381,10 @@
 			],
 			"discriminator": [165, 114, 103, 0, 121, 206, 247, 81],
 			"accounts": [
-				{ "name": "mint", "relations": ["sharing_config"] },
+				{
+					"name": "mint",
+					"relations": ["sharing_config"]
+				},
 				{
 					"name": "bonding_curve",
 					"pda": {
@@ -1037,7 +1395,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -1052,7 +1413,10 @@
 									103
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -1107,15 +1471,25 @@
 				}
 			],
 			"args": [],
-			"returns": { "defined": { "name": "DistributeCreatorFeesEvent" } }
+			"returns": {
+				"defined": {
+					"name": "DistributeCreatorFeesEvent"
+				}
+			}
 		},
 		{
 			"name": "extend_account",
 			"docs": ["Extends the size of program-owned accounts"],
 			"discriminator": [234, 102, 194, 203, 150, 72, 62, 229],
 			"accounts": [
-				{ "name": "account", "writable": true },
-				{ "name": "user", "signer": true },
+				{
+					"name": "account",
+					"writable": true
+				},
+				{
+					"name": "user",
+					"signer": true
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
@@ -1134,7 +1508,9 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
 		},
@@ -1146,7 +1522,10 @@
 			],
 			"discriminator": [117, 225, 127, 202, 134, 95, 68, 35],
 			"accounts": [
-				{ "name": "mint", "relations": ["sharing_config"] },
+				{
+					"name": "mint",
+					"relations": ["sharing_config"]
+				},
 				{
 					"name": "bonding_curve",
 					"pda": {
@@ -1157,7 +1536,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -1172,7 +1554,10 @@
 									103
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -1204,14 +1589,24 @@
 				}
 			],
 			"args": [],
-			"returns": { "defined": { "name": "MinimumDistributableFeeEvent" } }
+			"returns": {
+				"defined": {
+					"name": "MinimumDistributableFeeEvent"
+				}
+			}
 		},
 		{
 			"name": "init_user_volume_accumulator",
 			"discriminator": [94, 6, 202, 115, 255, 96, 232, 183],
 			"accounts": [
-				{ "name": "payer", "writable": true, "signer": true },
-				{ "name": "user" },
+				{
+					"name": "payer",
+					"writable": true,
+					"signer": true
+				},
+				{
+					"name": "user"
+				},
 				{
 					"name": "user_volume_accumulator",
 					"writable": true,
@@ -1224,7 +1619,10 @@
 									99, 99, 117, 109, 117, 108, 97, 116, 111, 114
 								]
 							},
-							{ "kind": "account", "path": "user" }
+							{
+								"kind": "account",
+								"path": "user"
+							}
 						]
 					}
 				},
@@ -1246,7 +1644,9 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
 		},
@@ -1260,11 +1660,18 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "user", "writable": true, "signer": true },
+				{
+					"name": "user",
+					"writable": true,
+					"signer": true
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
@@ -1283,7 +1690,10 @@
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
@@ -1292,7 +1702,9 @@
 					"writable": true,
 					"relations": ["global"]
 				},
-				{ "name": "mint" },
+				{
+					"name": "mint"
+				},
 				{
 					"name": "bonding_curve",
 					"writable": true,
@@ -1304,7 +1716,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -1313,9 +1728,18 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "bonding_curve" },
-							{ "kind": "account", "path": "mint" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "bonding_curve"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -1327,7 +1751,10 @@
 						}
 					}
 				},
-				{ "name": "user", "signer": true },
+				{
+					"name": "user",
+					"signer": true
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
@@ -1345,13 +1772,31 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [112, 111, 111, 108] },
-							{ "kind": "const", "value": [0, 0] },
-							{ "kind": "account", "path": "pool_authority" },
-							{ "kind": "account", "path": "mint" },
-							{ "kind": "account", "path": "wsol_mint" }
+							{
+								"kind": "const",
+								"value": [112, 111, 111, 108]
+							},
+							{
+								"kind": "const",
+								"value": [0, 0]
+							},
+							{
+								"kind": "account",
+								"path": "pool_authority"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							},
+							{
+								"kind": "account",
+								"path": "wsol_mint"
+							}
 						],
-						"program": { "kind": "account", "path": "pump_amm" }
+						"program": {
+							"kind": "account",
+							"path": "pump_amm"
+						}
 					}
 				},
 				{
@@ -1366,7 +1811,10 @@
 									121
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -1375,11 +1823,23 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "pool_authority" },
-							{ "kind": "account", "path": "mint" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "pool_authority"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
-						"program": { "kind": "account", "path": "associated_token_program" }
+						"program": {
+							"kind": "account",
+							"path": "associated_token_program"
+						}
 					}
 				},
 				{
@@ -1387,11 +1847,23 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "pool_authority" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "wsol_mint" }
+							{
+								"kind": "account",
+								"path": "pool_authority"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "wsol_mint"
+							}
 						],
-						"program": { "kind": "account", "path": "associated_token_program" }
+						"program": {
+							"kind": "account",
+							"path": "associated_token_program"
+						}
 					}
 				},
 				{
@@ -1405,7 +1877,10 @@
 								]
 							}
 						],
-						"program": { "kind": "account", "path": "pump_amm" }
+						"program": {
+							"kind": "account",
+							"path": "pump_amm"
+						}
 					}
 				},
 				{
@@ -1423,9 +1898,15 @@
 									112, 111, 111, 108, 95, 108, 112, 95, 109, 105, 110, 116
 								]
 							},
-							{ "kind": "account", "path": "pool" }
+							{
+								"kind": "account",
+								"path": "pool"
+							}
 						],
-						"program": { "kind": "account", "path": "pump_amm" }
+						"program": {
+							"kind": "account",
+							"path": "pump_amm"
+						}
 					}
 				},
 				{
@@ -1433,11 +1914,23 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "pool_authority" },
-							{ "kind": "account", "path": "token_2022_program" },
-							{ "kind": "account", "path": "lp_mint" }
+							{
+								"kind": "account",
+								"path": "pool_authority"
+							},
+							{
+								"kind": "account",
+								"path": "token_2022_program"
+							},
+							{
+								"kind": "account",
+								"path": "lp_mint"
+							}
 						],
-						"program": { "kind": "account", "path": "associated_token_program" }
+						"program": {
+							"kind": "account",
+							"path": "associated_token_program"
+						}
 					}
 				},
 				{
@@ -1445,11 +1938,23 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "pool" },
-							{ "kind": "account", "path": "mint" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "pool"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
-						"program": { "kind": "account", "path": "associated_token_program" }
+						"program": {
+							"kind": "account",
+							"path": "associated_token_program"
+						}
 					}
 				},
 				{
@@ -1457,11 +1962,23 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "pool" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "wsol_mint" }
+							{
+								"kind": "account",
+								"path": "pool"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "wsol_mint"
+							}
 						],
-						"program": { "kind": "account", "path": "associated_token_program" }
+						"program": {
+							"kind": "account",
+							"path": "associated_token_program"
+						}
 					}
 				},
 				{
@@ -1484,7 +2001,10 @@
 								]
 							}
 						],
-						"program": { "kind": "account", "path": "pump_amm" }
+						"program": {
+							"kind": "account",
+							"path": "pump_amm"
+						}
 					}
 				},
 				{
@@ -1501,7 +2021,9 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
 		},
@@ -1509,7 +2031,10 @@
 			"name": "migrate_bonding_curve_creator",
 			"discriminator": [87, 124, 52, 191, 52, 38, 214, 232],
 			"accounts": [
-				{ "name": "mint", "relations": ["sharing_config"] },
+				{
+					"name": "mint",
+					"relations": ["sharing_config"]
+				},
 				{
 					"name": "bonding_curve",
 					"writable": true,
@@ -1521,7 +2046,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -1536,7 +2064,10 @@
 									103
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -1562,25 +2093,40 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
 		},
 		{
 			"name": "sell",
-			"docs": ["Sells tokens into a bonding curve."],
+			"docs": [
+				"Sells tokens into a bonding curve.",
+				"For cashback coins, optionally pass user_volume_accumulator as remaining_accounts[0].",
+				"If provided and valid, creator_fee goes to user_volume_accumulator.",
+				"Otherwise, falls back to transferring creator_fee to creator_vault."
+			],
 			"discriminator": [51, 230, 133, 164, 1, 127, 131, 173],
 			"accounts": [
 				{
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "fee_recipient", "writable": true },
-				{ "name": "mint" },
+				{
+					"name": "fee_recipient",
+					"writable": true
+				},
+				{
+					"name": "mint"
+				},
 				{
 					"name": "bonding_curve",
 					"writable": true,
@@ -1592,7 +2138,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -1601,9 +2150,18 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "bonding_curve" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "bonding_curve"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -1615,8 +2173,15 @@
 						}
 					}
 				},
-				{ "name": "associated_user", "writable": true },
-				{ "name": "user", "writable": true, "signer": true },
+				{
+					"name": "associated_user",
+					"writable": true
+				},
+				{
+					"name": "user",
+					"writable": true,
+					"signer": true
+				},
 				{
 					"name": "system_program",
 					"address": "11111111111111111111111111111111"
@@ -1640,7 +2205,9 @@
 						]
 					}
 				},
-				{ "name": "token_program" },
+				{
+					"name": "token_program"
+				},
 				{
 					"name": "event_authority",
 					"pda": {
@@ -1676,7 +2243,10 @@
 								]
 							}
 						],
-						"program": { "kind": "account", "path": "fee_program" }
+						"program": {
+							"kind": "account",
+							"path": "fee_program"
+						}
 					}
 				},
 				{
@@ -1685,8 +2255,14 @@
 				}
 			],
 			"args": [
-				{ "name": "amount", "type": "u64" },
-				{ "name": "min_sol_output", "type": "u64" }
+				{
+					"name": "amount",
+					"type": "u64"
+				},
+				{
+					"name": "min_sol_output",
+					"type": "u64"
+				}
 			]
 		},
 		{
@@ -1705,11 +2281,16 @@
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "mint" },
+				{
+					"name": "mint"
+				},
 				{
 					"name": "metadata",
 					"pda": {
@@ -1726,7 +2307,10 @@
 									209, 188, 3, 248, 41, 70
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -1749,7 +2333,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -1767,9 +2354,16 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
-			"args": [{ "name": "creator", "type": "pubkey" }]
+			"args": [
+				{
+					"name": "creator",
+					"type": "pubkey"
+				}
+			]
 		},
 		{
 			"name": "set_mayhem_virtual_params",
@@ -1801,9 +2395,18 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "account", "path": "sol_vault_authority" },
-							{ "kind": "account", "path": "token_program" },
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "sol_vault_authority"
+							},
+							{
+								"kind": "account",
+								"path": "token_program"
+							},
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -1815,12 +2418,17 @@
 						}
 					}
 				},
-				{ "name": "mint" },
+				{
+					"name": "mint"
+				},
 				{
 					"name": "global",
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
@@ -1835,7 +2443,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -1857,7 +2468,9 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
 		},
@@ -1868,7 +2481,9 @@
 			],
 			"discriminator": [138, 96, 174, 217, 48, 85, 197, 246],
 			"accounts": [
-				{ "name": "mint" },
+				{
+					"name": "mint"
+				},
 				{
 					"name": "metadata",
 					"pda": {
@@ -1885,7 +2500,10 @@
 									209, 188, 3, 248, 41, 70
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						],
 						"program": {
 							"kind": "const",
@@ -1908,7 +2526,10 @@
 									98, 111, 110, 100, 105, 110, 103, 45, 99, 117, 114, 118, 101
 								]
 							},
-							{ "kind": "account", "path": "mint" }
+							{
+								"kind": "account",
+								"path": "mint"
+							}
 						]
 					}
 				},
@@ -1926,7 +2547,9 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
 		},
@@ -1940,7 +2563,10 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
@@ -1964,20 +2590,55 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": [
-				{ "name": "initial_virtual_token_reserves", "type": "u64" },
-				{ "name": "initial_virtual_sol_reserves", "type": "u64" },
-				{ "name": "initial_real_token_reserves", "type": "u64" },
-				{ "name": "token_total_supply", "type": "u64" },
-				{ "name": "fee_basis_points", "type": "u64" },
-				{ "name": "withdraw_authority", "type": "pubkey" },
-				{ "name": "enable_migrate", "type": "bool" },
-				{ "name": "pool_migration_fee", "type": "u64" },
-				{ "name": "creator_fee_basis_points", "type": "u64" },
-				{ "name": "set_creator_authority", "type": "pubkey" },
-				{ "name": "admin_set_creator_authority", "type": "pubkey" }
+				{
+					"name": "initial_virtual_token_reserves",
+					"type": "u64"
+				},
+				{
+					"name": "initial_virtual_sol_reserves",
+					"type": "u64"
+				},
+				{
+					"name": "initial_real_token_reserves",
+					"type": "u64"
+				},
+				{
+					"name": "token_total_supply",
+					"type": "u64"
+				},
+				{
+					"name": "fee_basis_points",
+					"type": "u64"
+				},
+				{
+					"name": "withdraw_authority",
+					"type": "pubkey"
+				},
+				{
+					"name": "enable_migrate",
+					"type": "bool"
+				},
+				{
+					"name": "pool_migration_fee",
+					"type": "u64"
+				},
+				{
+					"name": "creator_fee_basis_points",
+					"type": "u64"
+				},
+				{
+					"name": "set_creator_authority",
+					"type": "pubkey"
+				},
+				{
+					"name": "admin_set_creator_authority",
+					"type": "pubkey"
+				}
 			]
 		},
 		{
@@ -1989,11 +2650,18 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "authority", "signer": true, "relations": ["global"] },
+				{
+					"name": "authority",
+					"signer": true,
+					"relations": ["global"]
+				},
 				{
 					"name": "event_authority",
 					"pda": {
@@ -2008,15 +2676,24 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
-			"args": [{ "name": "whitelist_pda", "type": "pubkey" }]
+			"args": [
+				{
+					"name": "whitelist_pda",
+					"type": "pubkey"
+				}
+			]
 		},
 		{
 			"name": "sync_user_volume_accumulator",
 			"discriminator": [86, 31, 192, 87, 163, 87, 79, 238],
 			"accounts": [
-				{ "name": "user" },
+				{
+					"name": "user"
+				},
 				{
 					"name": "global_volume_accumulator",
 					"pda": {
@@ -2043,7 +2720,10 @@
 									99, 99, 117, 109, 117, 108, 97, 116, 111, 114
 								]
 							},
-							{ "kind": "account", "path": "user" }
+							{
+								"kind": "account",
+								"path": "user"
+							}
 						]
 					}
 				},
@@ -2061,9 +2741,58 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
+		},
+		{
+			"name": "toggle_cashback_enabled",
+			"discriminator": [115, 103, 224, 255, 189, 89, 86, 195],
+			"accounts": [
+				{
+					"name": "global",
+					"writable": true,
+					"pda": {
+						"seeds": [
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
+						]
+					}
+				},
+				{
+					"name": "authority",
+					"writable": true,
+					"signer": true,
+					"relations": ["global"]
+				},
+				{
+					"name": "event_authority",
+					"pda": {
+						"seeds": [
+							{
+								"kind": "const",
+								"value": [
+									95, 95, 101, 118, 101, 110, 116, 95, 97, 117, 116, 104, 111,
+									114, 105, 116, 121
+								]
+							}
+						]
+					}
+				},
+				{
+					"name": "program"
+				}
+			],
+			"args": [
+				{
+					"name": "enabled",
+					"type": "bool"
+				}
+			]
 		},
 		{
 			"name": "toggle_create_v2",
@@ -2074,7 +2803,10 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
@@ -2098,9 +2830,16 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
-			"args": [{ "name": "enabled", "type": "bool" }]
+			"args": [
+				{
+					"name": "enabled",
+					"type": "bool"
+				}
+			]
 		},
 		{
 			"name": "toggle_mayhem_mode",
@@ -2111,7 +2850,10 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
@@ -2135,9 +2877,16 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
-			"args": [{ "name": "enabled", "type": "bool" }]
+			"args": [
+				{
+					"name": "enabled",
+					"type": "bool"
+				}
+			]
 		},
 		{
 			"name": "update_global_authority",
@@ -2148,12 +2897,21 @@
 					"writable": true,
 					"pda": {
 						"seeds": [
-							{ "kind": "const", "value": [103, 108, 111, 98, 97, 108] }
+							{
+								"kind": "const",
+								"value": [103, 108, 111, 98, 97, 108]
+							}
 						]
 					}
 				},
-				{ "name": "authority", "signer": true, "relations": ["global"] },
-				{ "name": "new_authority" },
+				{
+					"name": "authority",
+					"signer": true,
+					"relations": ["global"]
+				},
+				{
+					"name": "new_authority"
+				},
 				{
 					"name": "event_authority",
 					"pda": {
@@ -2168,7 +2926,9 @@
 						]
 					}
 				},
-				{ "name": "program" }
+				{
+					"name": "program"
+				}
 			],
 			"args": []
 		}
@@ -2211,6 +2971,10 @@
 		{
 			"name": "AdminUpdateTokenIncentivesEvent",
 			"discriminator": [147, 250, 108, 120, 247, 29, 67, 222]
+		},
+		{
+			"name": "ClaimCashbackEvent",
+			"discriminator": [226, 214, 246, 33, 7, 242, 147, 229]
 		},
 		{
 			"name": "ClaimTokenIncentivesEvent",
@@ -2385,22 +3149,46 @@
 			"name": "DisabledMigrate",
 			"msg": "Migrate instruction is disabled"
 		},
-		{ "code": 6019, "name": "InvalidCreator", "msg": "Invalid creator pubkey" },
-		{ "code": 6020, "name": "BuyZeroAmount", "msg": "Buy zero amount" },
+		{
+			"code": 6019,
+			"name": "InvalidCreator",
+			"msg": "Invalid creator pubkey"
+		},
+		{
+			"code": 6020,
+			"name": "BuyZeroAmount",
+			"msg": "Buy zero amount"
+		},
 		{
 			"code": 6021,
 			"name": "NotEnoughTokensToBuy",
 			"msg": "Not enough tokens to buy"
 		},
-		{ "code": 6022, "name": "SellZeroAmount", "msg": "Sell zero amount" },
+		{
+			"code": 6022,
+			"name": "SellZeroAmount",
+			"msg": "Sell zero amount"
+		},
 		{
 			"code": 6023,
 			"name": "NotEnoughTokensToSell",
 			"msg": "Not enough tokens to sell"
 		},
-		{ "code": 6024, "name": "Overflow", "msg": "Overflow" },
-		{ "code": 6025, "name": "Truncation", "msg": "Truncation" },
-		{ "code": 6026, "name": "DivisionByZero", "msg": "Division by zero" },
+		{
+			"code": 6024,
+			"name": "Overflow",
+			"msg": "Overflow"
+		},
+		{
+			"code": 6025,
+			"name": "Truncation",
+			"msg": "Truncation"
+		},
+		{
+			"code": 6026,
+			"name": "DivisionByZero",
+			"msg": "Division by zero"
+		},
 		{
 			"code": 6027,
 			"name": "NotEnoughRemainingAccounts",
@@ -2421,15 +3209,42 @@
 			"name": "CreatorShouldNotBeZero",
 			"msg": "Creator should not be zero"
 		},
-		{ "code": 6031, "name": "StartTimeInThePast" },
-		{ "code": 6032, "name": "EndTimeInThePast" },
-		{ "code": 6033, "name": "EndTimeBeforeStartTime" },
-		{ "code": 6034, "name": "TimeRangeTooLarge" },
-		{ "code": 6035, "name": "EndTimeBeforeCurrentDay" },
-		{ "code": 6036, "name": "SupplyUpdateForFinishedRange" },
-		{ "code": 6037, "name": "DayIndexAfterEndIndex" },
-		{ "code": 6038, "name": "DayInActiveRange" },
-		{ "code": 6039, "name": "InvalidIncentiveMint" },
+		{
+			"code": 6031,
+			"name": "StartTimeInThePast"
+		},
+		{
+			"code": 6032,
+			"name": "EndTimeInThePast"
+		},
+		{
+			"code": 6033,
+			"name": "EndTimeBeforeStartTime"
+		},
+		{
+			"code": 6034,
+			"name": "TimeRangeTooLarge"
+		},
+		{
+			"code": 6035,
+			"name": "EndTimeBeforeCurrentDay"
+		},
+		{
+			"code": 6036,
+			"name": "SupplyUpdateForFinishedRange"
+		},
+		{
+			"code": 6037,
+			"name": "DayIndexAfterEndIndex"
+		},
+		{
+			"code": 6038,
+			"name": "DayInActiveRange"
+		},
+		{
+			"code": 6039,
+			"name": "InvalidIncentiveMint"
+		},
 		{
 			"code": 6040,
 			"name": "BuyNotEnoughSolToCoverRent",
@@ -2445,12 +3260,30 @@
 			"name": "BuySlippageBelowMinTokensOut",
 			"msg": "Slippage: Would buy less tokens than expected min_tokens_out"
 		},
-		{ "code": 6043, "name": "NameTooLong" },
-		{ "code": 6044, "name": "SymbolTooLong" },
-		{ "code": 6045, "name": "UriTooLong" },
-		{ "code": 6046, "name": "CreateV2Disabled" },
-		{ "code": 6047, "name": "CpitializeMayhemFailed" },
-		{ "code": 6048, "name": "MayhemModeDisabled" },
+		{
+			"code": 6043,
+			"name": "NameTooLong"
+		},
+		{
+			"code": 6044,
+			"name": "SymbolTooLong"
+		},
+		{
+			"code": 6045,
+			"name": "UriTooLong"
+		},
+		{
+			"code": 6046,
+			"name": "CreateV2Disabled"
+		},
+		{
+			"code": 6047,
+			"name": "CpitializeMayhemFailed"
+		},
+		{
+			"code": 6048,
+			"name": "MayhemModeDisabled"
+		},
 		{
 			"code": 6049,
 			"name": "CreatorMigratedToSharingConfig",
@@ -2485,6 +3318,11 @@
 			"code": 6055,
 			"name": "InvalidShareBps",
 			"msg": "Share bps must be greater than 0"
+		},
+		{
+			"code": 6056,
+			"name": "CashbackNotEnabled",
+			"msg": "Cashback is not enabled"
 		}
 	],
 	"types": [
@@ -2493,12 +3331,30 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "admin_set_creator_authority", "type": "pubkey" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "bonding_curve", "type": "pubkey" },
-					{ "name": "old_creator", "type": "pubkey" },
-					{ "name": "new_creator", "type": "pubkey" }
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "admin_set_creator_authority",
+						"type": "pubkey"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "bonding_curve",
+						"type": "pubkey"
+					},
+					{
+						"name": "old_creator",
+						"type": "pubkey"
+					},
+					{
+						"name": "new_creator",
+						"type": "pubkey"
+					}
 				]
 			}
 		},
@@ -2506,7 +3362,12 @@
 			"name": "AdminSetIdlAuthorityEvent",
 			"type": {
 				"kind": "struct",
-				"fields": [{ "name": "idl_authority", "type": "pubkey" }]
+				"fields": [
+					{
+						"name": "idl_authority",
+						"type": "pubkey"
+					}
+				]
 			}
 		},
 		{
@@ -2514,13 +3375,34 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "start_time", "type": "i64" },
-					{ "name": "end_time", "type": "i64" },
-					{ "name": "day_number", "type": "u64" },
-					{ "name": "token_supply_per_day", "type": "u64" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "seconds_in_a_day", "type": "i64" },
-					{ "name": "timestamp", "type": "i64" }
+					{
+						"name": "start_time",
+						"type": "i64"
+					},
+					{
+						"name": "end_time",
+						"type": "i64"
+					},
+					{
+						"name": "day_number",
+						"type": "u64"
+					},
+					{
+						"name": "token_supply_per_day",
+						"type": "u64"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "seconds_in_a_day",
+						"type": "i64"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					}
 				]
 			}
 		},
@@ -2529,14 +3411,70 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "virtual_token_reserves", "type": "u64" },
-					{ "name": "virtual_sol_reserves", "type": "u64" },
-					{ "name": "real_token_reserves", "type": "u64" },
-					{ "name": "real_sol_reserves", "type": "u64" },
-					{ "name": "token_total_supply", "type": "u64" },
-					{ "name": "complete", "type": "bool" },
-					{ "name": "creator", "type": "pubkey" },
-					{ "name": "is_mayhem_mode", "type": "bool" }
+					{
+						"name": "virtual_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "virtual_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "real_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "real_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "token_total_supply",
+						"type": "u64"
+					},
+					{
+						"name": "complete",
+						"type": "bool"
+					},
+					{
+						"name": "creator",
+						"type": "pubkey"
+					},
+					{
+						"name": "is_mayhem_mode",
+						"type": "bool"
+					},
+					{
+						"name": "is_cashback_coin",
+						"type": "bool"
+					}
+				]
+			}
+		},
+		{
+			"name": "ClaimCashbackEvent",
+			"type": {
+				"kind": "struct",
+				"fields": [
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "amount",
+						"type": "u64"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "total_claimed",
+						"type": "u64"
+					},
+					{
+						"name": "total_cashback_earned",
+						"type": "u64"
+					}
 				]
 			}
 		},
@@ -2545,12 +3483,30 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "amount", "type": "u64" },
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "total_claimed_tokens", "type": "u64" },
-					{ "name": "current_sol_volume", "type": "u64" }
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "amount",
+						"type": "u64"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "total_claimed_tokens",
+						"type": "u64"
+					},
+					{
+						"name": "current_sol_volume",
+						"type": "u64"
+					}
 				]
 			}
 		},
@@ -2559,12 +3515,30 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "total_unclaimed_tokens", "type": "u64" },
-					{ "name": "total_claimed_tokens", "type": "u64" },
-					{ "name": "current_sol_volume", "type": "u64" },
-					{ "name": "last_update_timestamp", "type": "i64" }
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "total_unclaimed_tokens",
+						"type": "u64"
+					},
+					{
+						"name": "total_claimed_tokens",
+						"type": "u64"
+					},
+					{
+						"name": "current_sol_volume",
+						"type": "u64"
+					},
+					{
+						"name": "last_update_timestamp",
+						"type": "i64"
+					}
 				]
 			}
 		},
@@ -2573,9 +3547,18 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "creator", "type": "pubkey" },
-					{ "name": "creator_fee", "type": "u64" }
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "creator",
+						"type": "pubkey"
+					},
+					{
+						"name": "creator_fee",
+						"type": "u64"
+					}
 				]
 			}
 		},
@@ -2584,10 +3567,22 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "bonding_curve", "type": "pubkey" },
-					{ "name": "timestamp", "type": "i64" }
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "bonding_curve",
+						"type": "pubkey"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					}
 				]
 			}
 		},
@@ -2596,14 +3591,38 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "mint_amount", "type": "u64" },
-					{ "name": "sol_amount", "type": "u64" },
-					{ "name": "pool_migration_fee", "type": "u64" },
-					{ "name": "bonding_curve", "type": "pubkey" },
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "pool", "type": "pubkey" }
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "mint_amount",
+						"type": "u64"
+					},
+					{
+						"name": "sol_amount",
+						"type": "u64"
+					},
+					{
+						"name": "pool_migration_fee",
+						"type": "u64"
+					},
+					{
+						"name": "bonding_curve",
+						"type": "pubkey"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "pool",
+						"type": "pubkey"
+					}
 				]
 			}
 		},
@@ -2611,7 +3630,14 @@
 			"name": "ConfigStatus",
 			"type": {
 				"kind": "enum",
-				"variants": [{ "name": "Paused" }, { "name": "Active" }]
+				"variants": [
+					{
+						"name": "Paused"
+					},
+					{
+						"name": "Active"
+					}
+				]
 			}
 		},
 		{
@@ -2619,20 +3645,66 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "name", "type": "string" },
-					{ "name": "symbol", "type": "string" },
-					{ "name": "uri", "type": "string" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "bonding_curve", "type": "pubkey" },
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "creator", "type": "pubkey" },
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "virtual_token_reserves", "type": "u64" },
-					{ "name": "virtual_sol_reserves", "type": "u64" },
-					{ "name": "real_token_reserves", "type": "u64" },
-					{ "name": "token_total_supply", "type": "u64" },
-					{ "name": "token_program", "type": "pubkey" },
-					{ "name": "is_mayhem_mode", "type": "bool" }
+					{
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"name": "symbol",
+						"type": "string"
+					},
+					{
+						"name": "uri",
+						"type": "string"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "bonding_curve",
+						"type": "pubkey"
+					},
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "creator",
+						"type": "pubkey"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "virtual_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "virtual_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "real_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "token_total_supply",
+						"type": "u64"
+					},
+					{
+						"name": "token_program",
+						"type": "pubkey"
+					},
+					{
+						"name": "is_mayhem_mode",
+						"type": "bool"
+					},
+					{
+						"name": "is_cashback_enabled",
+						"type": "bool"
+					}
 				]
 			}
 		},
@@ -2641,16 +3713,40 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "bonding_curve", "type": "pubkey" },
-					{ "name": "sharing_config", "type": "pubkey" },
-					{ "name": "admin", "type": "pubkey" },
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "bonding_curve",
+						"type": "pubkey"
+					},
+					{
+						"name": "sharing_config",
+						"type": "pubkey"
+					},
+					{
+						"name": "admin",
+						"type": "pubkey"
+					},
 					{
 						"name": "shareholders",
-						"type": { "vec": { "defined": { "name": "Shareholder" } } }
+						"type": {
+							"vec": {
+								"defined": {
+									"name": "Shareholder"
+								}
+							}
+						}
 					},
-					{ "name": "distributed", "type": "u64" }
+					{
+						"name": "distributed",
+						"type": "u64"
+					}
 				]
 			}
 		},
@@ -2659,11 +3755,26 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "account", "type": "pubkey" },
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "current_size", "type": "u64" },
-					{ "name": "new_size", "type": "u64" },
-					{ "name": "timestamp", "type": "i64" }
+					{
+						"name": "account",
+						"type": "pubkey"
+					},
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "current_size",
+						"type": "u64"
+					},
+					{
+						"name": "new_size",
+						"type": "u64"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					}
 				]
 			}
 		},
@@ -2672,12 +3783,31 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "bump", "type": "u8" },
-					{ "name": "admin", "type": "pubkey" },
-					{ "name": "flat_fees", "type": { "defined": { "name": "Fees" } } },
+					{
+						"name": "bump",
+						"type": "u8"
+					},
+					{
+						"name": "admin",
+						"type": "pubkey"
+					},
+					{
+						"name": "flat_fees",
+						"type": {
+							"defined": {
+								"name": "Fees"
+							}
+						}
+					},
 					{
 						"name": "fee_tiers",
-						"type": { "vec": { "defined": { "name": "FeeTier" } } }
+						"type": {
+							"vec": {
+								"defined": {
+									"name": "FeeTier"
+								}
+							}
+						}
 					}
 				]
 			}
@@ -2687,8 +3817,18 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "market_cap_lamports_threshold", "type": "u128" },
-					{ "name": "fees", "type": { "defined": { "name": "Fees" } } }
+					{
+						"name": "market_cap_lamports_threshold",
+						"type": "u128"
+					},
+					{
+						"name": "fees",
+						"type": {
+							"defined": {
+								"name": "Fees"
+							}
+						}
+					}
 				]
 			}
 		},
@@ -2697,9 +3837,18 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "lp_fee_bps", "type": "u64" },
-					{ "name": "protocol_fee_bps", "type": "u64" },
-					{ "name": "creator_fee_bps", "type": "u64" }
+					{
+						"name": "lp_fee_bps",
+						"type": "u64"
+					},
+					{
+						"name": "protocol_fee_bps",
+						"type": "u64"
+					},
+					{
+						"name": "creator_fee_bps",
+						"type": "u64"
+					}
 				]
 			}
 		},
@@ -2708,28 +3857,95 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "initialized", "docs": ["Unused"], "type": "bool" },
-					{ "name": "authority", "type": "pubkey" },
-					{ "name": "fee_recipient", "type": "pubkey" },
-					{ "name": "initial_virtual_token_reserves", "type": "u64" },
-					{ "name": "initial_virtual_sol_reserves", "type": "u64" },
-					{ "name": "initial_real_token_reserves", "type": "u64" },
-					{ "name": "token_total_supply", "type": "u64" },
-					{ "name": "fee_basis_points", "type": "u64" },
-					{ "name": "withdraw_authority", "type": "pubkey" },
-					{ "name": "enable_migrate", "docs": ["Unused"], "type": "bool" },
-					{ "name": "pool_migration_fee", "type": "u64" },
-					{ "name": "creator_fee_basis_points", "type": "u64" },
-					{ "name": "fee_recipients", "type": { "array": ["pubkey", 7] } },
-					{ "name": "set_creator_authority", "type": "pubkey" },
-					{ "name": "admin_set_creator_authority", "type": "pubkey" },
-					{ "name": "create_v2_enabled", "type": "bool" },
-					{ "name": "whitelist_pda", "type": "pubkey" },
-					{ "name": "reserved_fee_recipient", "type": "pubkey" },
-					{ "name": "mayhem_mode_enabled", "type": "bool" },
+					{
+						"name": "initialized",
+						"docs": ["Unused"],
+						"type": "bool"
+					},
+					{
+						"name": "authority",
+						"type": "pubkey"
+					},
+					{
+						"name": "fee_recipient",
+						"type": "pubkey"
+					},
+					{
+						"name": "initial_virtual_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "initial_virtual_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "initial_real_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "token_total_supply",
+						"type": "u64"
+					},
+					{
+						"name": "fee_basis_points",
+						"type": "u64"
+					},
+					{
+						"name": "withdraw_authority",
+						"type": "pubkey"
+					},
+					{
+						"name": "enable_migrate",
+						"docs": ["Unused"],
+						"type": "bool"
+					},
+					{
+						"name": "pool_migration_fee",
+						"type": "u64"
+					},
+					{
+						"name": "creator_fee_basis_points",
+						"type": "u64"
+					},
+					{
+						"name": "fee_recipients",
+						"type": {
+							"array": ["pubkey", 7]
+						}
+					},
+					{
+						"name": "set_creator_authority",
+						"type": "pubkey"
+					},
+					{
+						"name": "admin_set_creator_authority",
+						"type": "pubkey"
+					},
+					{
+						"name": "create_v2_enabled",
+						"type": "bool"
+					},
+					{
+						"name": "whitelist_pda",
+						"type": "pubkey"
+					},
+					{
+						"name": "reserved_fee_recipient",
+						"type": "pubkey"
+					},
+					{
+						"name": "mayhem_mode_enabled",
+						"type": "bool"
+					},
 					{
 						"name": "reserved_fee_recipients",
-						"type": { "array": ["pubkey", 7] }
+						"type": {
+							"array": ["pubkey", 7]
+						}
+					},
+					{
+						"name": "is_cashback_enabled",
+						"type": "bool"
 					}
 				]
 			}
@@ -2739,12 +3955,34 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "start_time", "type": "i64" },
-					{ "name": "end_time", "type": "i64" },
-					{ "name": "seconds_in_a_day", "type": "i64" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "total_token_supply", "type": { "array": ["u64", 30] } },
-					{ "name": "sol_volumes", "type": { "array": ["u64", 30] } }
+					{
+						"name": "start_time",
+						"type": "i64"
+					},
+					{
+						"name": "end_time",
+						"type": "i64"
+					},
+					{
+						"name": "seconds_in_a_day",
+						"type": "i64"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "total_token_supply",
+						"type": {
+							"array": ["u64", 30]
+						}
+					},
+					{
+						"name": "sol_volumes",
+						"type": {
+							"array": ["u64", 30]
+						}
+					}
 				]
 			}
 		},
@@ -2753,9 +3991,18 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "payer", "type": "pubkey" },
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "timestamp", "type": "i64" }
+					{
+						"name": "payer",
+						"type": "pubkey"
+					},
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					}
 				]
 			}
 		},
@@ -2764,12 +4011,30 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "bonding_curve", "type": "pubkey" },
-					{ "name": "sharing_config", "type": "pubkey" },
-					{ "name": "old_creator", "type": "pubkey" },
-					{ "name": "new_creator", "type": "pubkey" }
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "bonding_curve",
+						"type": "pubkey"
+					},
+					{
+						"name": "sharing_config",
+						"type": "pubkey"
+					},
+					{
+						"name": "old_creator",
+						"type": "pubkey"
+					},
+					{
+						"name": "new_creator",
+						"type": "pubkey"
+					}
 				]
 			}
 		},
@@ -2778,23 +4043,46 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "minimum_required", "type": "u64" },
-					{ "name": "distributable_fees", "type": "u64" },
-					{ "name": "can_distribute", "type": "bool" }
+					{
+						"name": "minimum_required",
+						"type": "u64"
+					},
+					{
+						"name": "distributable_fees",
+						"type": "u64"
+					},
+					{
+						"name": "can_distribute",
+						"type": "bool"
+					}
 				]
 			}
 		},
-		{ "name": "OptionBool", "type": { "kind": "struct", "fields": ["bool"] } },
+		{
+			"name": "OptionBool",
+			"type": {
+				"kind": "struct",
+				"fields": ["bool"]
+			}
+		},
 		{
 			"name": "ReservedFeeRecipientsEvent",
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "reserved_fee_recipient", "type": "pubkey" },
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "reserved_fee_recipient",
+						"type": "pubkey"
+					},
 					{
 						"name": "reserved_fee_recipients",
-						"type": { "array": ["pubkey", 7] }
+						"type": {
+							"array": ["pubkey", 7]
+						}
 					}
 				]
 			}
@@ -2804,10 +4092,22 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "bonding_curve", "type": "pubkey" },
-					{ "name": "creator", "type": "pubkey" }
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "bonding_curve",
+						"type": "pubkey"
+					},
+					{
+						"name": "creator",
+						"type": "pubkey"
+					}
 				]
 			}
 		},
@@ -2816,11 +4116,26 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "bonding_curve", "type": "pubkey" },
-					{ "name": "metadata", "type": "pubkey" },
-					{ "name": "creator", "type": "pubkey" }
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "bonding_curve",
+						"type": "pubkey"
+					},
+					{
+						"name": "metadata",
+						"type": "pubkey"
+					},
+					{
+						"name": "creator",
+						"type": "pubkey"
+					}
 				]
 			}
 		},
@@ -2829,20 +4144,64 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "initial_virtual_token_reserves", "type": "u64" },
-					{ "name": "initial_virtual_sol_reserves", "type": "u64" },
-					{ "name": "initial_real_token_reserves", "type": "u64" },
-					{ "name": "final_real_sol_reserves", "type": "u64" },
-					{ "name": "token_total_supply", "type": "u64" },
-					{ "name": "fee_basis_points", "type": "u64" },
-					{ "name": "withdraw_authority", "type": "pubkey" },
-					{ "name": "enable_migrate", "type": "bool" },
-					{ "name": "pool_migration_fee", "type": "u64" },
-					{ "name": "creator_fee_basis_points", "type": "u64" },
-					{ "name": "fee_recipients", "type": { "array": ["pubkey", 8] } },
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "set_creator_authority", "type": "pubkey" },
-					{ "name": "admin_set_creator_authority", "type": "pubkey" }
+					{
+						"name": "initial_virtual_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "initial_virtual_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "initial_real_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "final_real_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "token_total_supply",
+						"type": "u64"
+					},
+					{
+						"name": "fee_basis_points",
+						"type": "u64"
+					},
+					{
+						"name": "withdraw_authority",
+						"type": "pubkey"
+					},
+					{
+						"name": "enable_migrate",
+						"type": "bool"
+					},
+					{
+						"name": "pool_migration_fee",
+						"type": "u64"
+					},
+					{
+						"name": "creator_fee_basis_points",
+						"type": "u64"
+					},
+					{
+						"name": "fee_recipients",
+						"type": {
+							"array": ["pubkey", 8]
+						}
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "set_creator_authority",
+						"type": "pubkey"
+					},
+					{
+						"name": "admin_set_creator_authority",
+						"type": "pubkey"
+					}
 				]
 			}
 		},
@@ -2851,8 +4210,14 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "address", "type": "pubkey" },
-					{ "name": "share_bps", "type": "u16" }
+					{
+						"name": "address",
+						"type": "pubkey"
+					},
+					{
+						"name": "share_bps",
+						"type": "u16"
+					}
 				]
 			}
 		},
@@ -2861,18 +4226,43 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "bump", "type": "u8" },
-					{ "name": "version", "type": "u8" },
+					{
+						"name": "bump",
+						"type": "u8"
+					},
+					{
+						"name": "version",
+						"type": "u8"
+					},
 					{
 						"name": "status",
-						"type": { "defined": { "name": "ConfigStatus" } }
+						"type": {
+							"defined": {
+								"name": "ConfigStatus"
+							}
+						}
 					},
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "admin", "type": "pubkey" },
-					{ "name": "admin_revoked", "type": "bool" },
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "admin",
+						"type": "pubkey"
+					},
+					{
+						"name": "admin_revoked",
+						"type": "bool"
+					},
 					{
 						"name": "shareholders",
-						"type": { "vec": { "defined": { "name": "Shareholder" } } }
+						"type": {
+							"vec": {
+								"defined": {
+									"name": "Shareholder"
+								}
+							}
+						}
 					}
 				]
 			}
@@ -2882,10 +4272,22 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "total_claimed_tokens_before", "type": "u64" },
-					{ "name": "total_claimed_tokens_after", "type": "u64" },
-					{ "name": "timestamp", "type": "i64" }
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "total_claimed_tokens_before",
+						"type": "u64"
+					},
+					{
+						"name": "total_claimed_tokens_after",
+						"type": "u64"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					}
 				]
 			}
 		},
@@ -2895,29 +4297,106 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "sol_amount", "type": "u64" },
-					{ "name": "token_amount", "type": "u64" },
-					{ "name": "is_buy", "type": "bool" },
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "virtual_sol_reserves", "type": "u64" },
-					{ "name": "virtual_token_reserves", "type": "u64" },
-					{ "name": "real_sol_reserves", "type": "u64" },
-					{ "name": "real_token_reserves", "type": "u64" },
-					{ "name": "fee_recipient", "type": "pubkey" },
-					{ "name": "fee_basis_points", "type": "u64" },
-					{ "name": "fee", "type": "u64" },
-					{ "name": "creator", "type": "pubkey" },
-					{ "name": "creator_fee_basis_points", "type": "u64" },
-					{ "name": "creator_fee", "type": "u64" },
-					{ "name": "track_volume", "type": "bool" },
-					{ "name": "total_unclaimed_tokens", "type": "u64" },
-					{ "name": "total_claimed_tokens", "type": "u64" },
-					{ "name": "current_sol_volume", "type": "u64" },
-					{ "name": "last_update_timestamp", "type": "i64" },
-					{ "name": "ix_name", "type": "string" },
-					{ "name": "mayhem_mode", "type": "bool" }
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "sol_amount",
+						"type": "u64"
+					},
+					{
+						"name": "token_amount",
+						"type": "u64"
+					},
+					{
+						"name": "is_buy",
+						"type": "bool"
+					},
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "virtual_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "virtual_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "real_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "real_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "fee_recipient",
+						"type": "pubkey"
+					},
+					{
+						"name": "fee_basis_points",
+						"type": "u64"
+					},
+					{
+						"name": "fee",
+						"type": "u64"
+					},
+					{
+						"name": "creator",
+						"type": "pubkey"
+					},
+					{
+						"name": "creator_fee_basis_points",
+						"type": "u64"
+					},
+					{
+						"name": "creator_fee",
+						"type": "u64"
+					},
+					{
+						"name": "track_volume",
+						"type": "bool"
+					},
+					{
+						"name": "total_unclaimed_tokens",
+						"type": "u64"
+					},
+					{
+						"name": "total_claimed_tokens",
+						"type": "u64"
+					},
+					{
+						"name": "current_sol_volume",
+						"type": "u64"
+					},
+					{
+						"name": "last_update_timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "ix_name",
+						"type": "string"
+					},
+					{
+						"name": "mayhem_mode",
+						"type": "bool"
+					},
+					{
+						"name": "cashback_fee_basis_points",
+						"type": "u64"
+					},
+					{
+						"name": "cashback",
+						"type": "u64"
+					}
 				]
 			}
 		},
@@ -2926,10 +4405,22 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "global", "type": "pubkey" },
-					{ "name": "authority", "type": "pubkey" },
-					{ "name": "new_authority", "type": "pubkey" },
-					{ "name": "timestamp", "type": "i64" }
+					{
+						"name": "global",
+						"type": "pubkey"
+					},
+					{
+						"name": "authority",
+						"type": "pubkey"
+					},
+					{
+						"name": "new_authority",
+						"type": "pubkey"
+					},
+					{
+						"name": "timestamp",
+						"type": "i64"
+					}
 				]
 			}
 		},
@@ -2938,14 +4429,38 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "timestamp", "type": "i64" },
-					{ "name": "mint", "type": "pubkey" },
-					{ "name": "virtual_token_reserves", "type": "u64" },
-					{ "name": "virtual_sol_reserves", "type": "u64" },
-					{ "name": "new_virtual_token_reserves", "type": "u64" },
-					{ "name": "new_virtual_sol_reserves", "type": "u64" },
-					{ "name": "real_token_reserves", "type": "u64" },
-					{ "name": "real_sol_reserves", "type": "u64" }
+					{
+						"name": "timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "mint",
+						"type": "pubkey"
+					},
+					{
+						"name": "virtual_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "virtual_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "new_virtual_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "new_virtual_sol_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "real_token_reserves",
+						"type": "u64"
+					},
+					{
+						"name": "real_sol_reserves",
+						"type": "u64"
+					}
 				]
 			}
 		},
@@ -2954,13 +4469,42 @@
 			"type": {
 				"kind": "struct",
 				"fields": [
-					{ "name": "user", "type": "pubkey" },
-					{ "name": "needs_claim", "type": "bool" },
-					{ "name": "total_unclaimed_tokens", "type": "u64" },
-					{ "name": "total_claimed_tokens", "type": "u64" },
-					{ "name": "current_sol_volume", "type": "u64" },
-					{ "name": "last_update_timestamp", "type": "i64" },
-					{ "name": "has_total_claimed_tokens", "type": "bool" }
+					{
+						"name": "user",
+						"type": "pubkey"
+					},
+					{
+						"name": "needs_claim",
+						"type": "bool"
+					},
+					{
+						"name": "total_unclaimed_tokens",
+						"type": "u64"
+					},
+					{
+						"name": "total_claimed_tokens",
+						"type": "u64"
+					},
+					{
+						"name": "current_sol_volume",
+						"type": "u64"
+					},
+					{
+						"name": "last_update_timestamp",
+						"type": "i64"
+					},
+					{
+						"name": "has_total_claimed_tokens",
+						"type": "bool"
+					},
+					{
+						"name": "cashback_earned",
+						"type": "u64"
+					},
+					{
+						"name": "total_cashback_claimed",
+						"type": "u64"
+					}
 				]
 			}
 		}

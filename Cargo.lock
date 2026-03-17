@@ -175,7 +175,7 @@ checksum = "6d9d22005bf31b018f31ef9ecadb5d2c39cf4f6acc8db0456f72c815f3d7f757"
 dependencies = [
  "alloy-primitives",
  "num_enum",
- "strum",
+ "strum 0.27.2",
 ]
 
 [[package]]
@@ -764,9 +764,9 @@ dependencies = [
 
 [[package]]
 name = "anchor-parser"
-version = "2.0.0"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dde25e864e9cbef8677d3d2e49134516230b19c332f4f684310f5d6775fca8c8"
+checksum = "c3bd4507d49aa78b145165e482989aefd1d2577446451215471373cf3ef28f91"
 dependencies = [
  "anchor-parser-macros",
  "base64 0.22.1",
@@ -778,9 +778,9 @@ dependencies = [
 
 [[package]]
 name = "anchor-parser-macros"
-version = "2.0.0"
+version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "943bda18064c730f2c7b36247747a8200909a61f787137739a7e0290c903fdfd"
+checksum = "2d230bf1dcd7cb63d2faf539601eae71635c294c6704c5bdd79a69c118551827"
 dependencies = [
  "bs58",
  "heck 0.5.0",
@@ -5155,7 +5155,7 @@ dependencies = [
  "sea-schema",
  "serde",
  "sqlx",
- "strum",
+ "strum 0.27.2",
  "thiserror 2.0.18",
  "tracing",
  "url",
@@ -5629,7 +5629,7 @@ dependencies = [
  "solana-sdk 4.0.1",
  "solana-system-interface 3.1.0",
  "spl-associated-token-account-interface",
- "strum",
+ "strum 0.28.0",
 ]
 
 [[package]]
@@ -8291,7 +8291,16 @@ version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af23d6f6c1a224baef9d3f61e287d2761385a5b88fdab4eb4c6f11aeb54c4bcf"
 dependencies = [
- "strum_macros",
+ "strum_macros 0.27.2",
+]
+
+[[package]]
+name = "strum"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9628de9b8791db39ceda2b119bbe13134770b56c138ec1d3af810d045c04f9bd"
+dependencies = [
+ "strum_macros 0.28.0",
 ]
 
 [[package]]
@@ -8299,6 +8308,18 @@ name = "strum_macros"
 version = "0.27.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7695ce3845ea4b33927c055a39dc438a45b059f7c1b3d91d38d10355fb8cbca7"
+dependencies = [
+ "heck 0.5.0",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
+name = "strum_macros"
+version = "0.28.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ab85eea0270ee17587ed4156089e10b9e6880ee688791d45a905f5b1ca36f664"
 dependencies = [
  "heck 0.5.0",
  "proc-macro2",

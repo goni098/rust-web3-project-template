@@ -20,8 +20,6 @@ use tracing::{error, info};
 const COMMITMENT: CommitmentConfig = CommitmentConfig::confirmed();
 /// Ping interval to keep WebSocket connection alive
 const PING_INTERVAL_SECS: u64 = 30;
-/// Polling interval to track zombie connection
-const ZOMBIE_INTERVAL_POLLING: u64 = 300;
 
 const DELAY_RECONNECT: u64 = 3;
 
@@ -52,12 +50,6 @@ async fn main() {
 
 async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketError> {
     let mut ping_clock = tokio::time::interval(Duration::from_secs(PING_INTERVAL_SECS));
-    let mut zombie_conn_detector =
-        tokio::time::interval(Duration::from_secs(ZOMBIE_INTERVAL_POLLING));
-    zombie_conn_detector.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
-
-    ping_clock.tick().await;
-    zombie_conn_detector.tick().await;
 
     let mut ws = ws_client::connect(uri).await?;
     info!("WebSocket connected {}", uri);
@@ -85,7 +77,6 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
         tokio::select! {
             frame = ws.read_frame() => {
                 if let Some(res) = extrator::extract_frame(&mut ws, frame?).await? {
-                    zombie_conn_detector.reset();
                     match handle_response_log(db, res).await {
                         Ok(Some(signature)) => info!("Processed transaction {}", signature),
                         Ok(None) => {},
@@ -96,10 +87,6 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
             _ = ping_clock.tick() => {
                 ws.write_frame(Frame::new(true, OpCode::Ping, None, Payload::Borrowed(b"ping"))).await?;
             },
-            _ = zombie_conn_detector.tick() => {
-                tracing::info!("no message received for {} seconds, reconnecting...", ZOMBIE_INTERVAL_POLLING);
-                return Ok(());
-            }
         }
     }
 }
