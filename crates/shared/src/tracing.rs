@@ -35,6 +35,5 @@ pub fn subscribe() {
     tracing_subscriber::registry()
         .with(out_layer)
         .with(err_layer)
-        .with(tracing_error::ErrorLayer::default())
         .init();
 }

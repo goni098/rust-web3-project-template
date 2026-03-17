@@ -5,11 +5,9 @@ use solana_client::{
     nonblocking::rpc_client::RpcClient, rpc_client::GetConfirmedSignaturesForAddress2Config,
 };
 use solana_sdk::signature::Signature;
-use tracing::instrument;
 
 use crate::COMMITMENT;
 
-#[instrument(skip_all)]
 pub async fn retrieve_txs(
     client: &RpcClient,
     cursor: &Signature,
@@ -55,7 +53,6 @@ pub async fn retrieve_txs(
     }
 }
 
-#[instrument(skip_all)]
 pub async fn get_the_first_signature(client: &RpcClient) -> Rs<Option<Signature>> {
     let mut before: Option<Signature> = None;
     let mut first_signature: Option<Signature> = None;

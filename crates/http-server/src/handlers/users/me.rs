@@ -1,7 +1,6 @@
 use axum::{Json, extract::State};
 use database::{repositories, sea_orm::DatabaseConnection};
 use serde::Serialize;
-use tracing::instrument;
 
 use crate::{
     exception::{HttpException, HttpResult},
@@ -13,7 +12,6 @@ pub struct Response {
     id: i64,
 }
 
-#[instrument(skip_all)]
 pub async fn handler(
     State(db): State<DatabaseConnection>,
     Auth(claims): Auth,

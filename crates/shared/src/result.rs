@@ -1,60 +1,93 @@
 use std::{borrow::Cow, num::ParseIntError};
 
-use tracing_error::SpanTrace;
-
-#[derive(Debug, thiserror::Error)]
-#[error("{error}\nTrace:\n{trace}")]
-pub struct TracedAppErr {
-    error: AppErr,
-    trace: SpanTrace,
-}
-
-impl<E> From<E> for TracedAppErr
-where
-    E: Into<AppErr>,
-{
-    fn from(source: E) -> Self {
-        TracedAppErr {
-            error: source.into(),
-            trace: SpanTrace::capture(),
-        }
-    }
-}
+type Location = &'static core::panic::Location<'static>;
 
 #[derive(Debug, thiserror::Error)]
 pub enum AppErr {
-    #[error("I/O error: {0}")]
-    Io(#[from] std::io::Error),
+    #[error("I/O error: {source}\n  at {location}")]
+    Io {
+        source: std::io::Error,
+        location: Location,
+    },
 
-    #[error("Custom: {0}")]
-    Custom(Cow<'static, str>),
+    #[error("Custom: {message}")]
+    Custom { message: Cow<'static, str> },
 
-    #[error("ParseIntError: {0}")]
-    ParseInt(#[from] ParseIntError),
+    #[error("ParseInt error: {source}\n  at {location}")]
+    ParseInt {
+        source: ParseIntError,
+        location: Location,
+    },
 
-    #[error(transparent)]
-    Database(#[from] sea_orm::error::DbErr),
+    #[error("{source}\n  at {location}")]
+    Database {
+        source: sea_orm::error::DbErr,
+        location: Location,
+    },
 
-    #[error(transparent)]
-    EvmRpc(#[from] alloy::transports::RpcError<alloy::transports::TransportErrorKind>),
+    #[error("{source}\n  at {location}")]
+    EvmRpc {
+        source: alloy::transports::RpcError<alloy::transports::TransportErrorKind>,
+        location: Location,
+    },
 
-    #[error(transparent)]
-    SolTypes(#[from] alloy::sol_types::Error),
+    #[error("{source}\n  at {location}")]
+    SolTypes {
+        source: alloy::sol_types::Error,
+        location: Location,
+    },
 
-    #[error(transparent)]
-    WaitReceiptTx(#[from] alloy::providers::PendingTransactionError),
+    #[error("{source}\n  at {location}")]
+    WaitReceiptTx {
+        source: alloy::providers::PendingTransactionError,
+        location: Location,
+    },
 
-    #[error(transparent)]
-    SolanaClient(#[from] solana_client::client_error::ClientError),
+    #[error("{source}\n  at {location}")]
+    SolanaClient {
+        source: solana_client::client_error::ClientError,
+        location: Location,
+    },
 
-    #[error(transparent)]
-    ParseSignature(#[from] solana_sdk::signature::ParseSignatureError),
+    #[error("{source}\n  at {location}")]
+    ParseSignature {
+        source: solana_sdk::signature::ParseSignatureError,
+        location: Location,
+    },
 }
 
-pub type Rs<T> = Result<T, TracedAppErr>;
+macro_rules! impl_from_tracked {
+    ($source_type:ty, $variant:ident) => {
+        impl From<$source_type> for AppErr {
+            #[track_caller]
+            fn from(source: $source_type) -> Self {
+                Self::$variant {
+                    source,
+                    location: core::panic::Location::caller(),
+                }
+            }
+        }
+    };
+}
+
+impl_from_tracked!(std::io::Error, Io);
+impl_from_tracked!(ParseIntError, ParseInt);
+impl_from_tracked!(sea_orm::error::DbErr, Database);
+impl_from_tracked!(
+    alloy::transports::RpcError<alloy::transports::TransportErrorKind>,
+    EvmRpc
+);
+impl_from_tracked!(alloy::sol_types::Error, SolTypes);
+impl_from_tracked!(alloy::providers::PendingTransactionError, WaitReceiptTx);
+impl_from_tracked!(solana_client::client_error::ClientError, SolanaClient);
+impl_from_tracked!(solana_sdk::signature::ParseSignatureError, ParseSignature);
+
+pub type Rs<T> = Result<T, AppErr>;
 
 impl AppErr {
-    pub fn custom<E: Into<Cow<'static, str>>>(error: E) -> TracedAppErr {
-        Self::Custom(error.into()).into()
+    pub fn custom<E: Into<Cow<'static, str>>>(message: E) -> AppErr {
+        AppErr::Custom {
+            message: message.into(),
+        }
     }
 }

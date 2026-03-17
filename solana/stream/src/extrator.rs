@@ -2,7 +2,6 @@ use fastwebsockets::{Frame, OpCode, WebSocketError};
 use serde::Deserialize;
 use serde_json::Value;
 use solana_client::rpc_response::{Response, RpcLogsResponse};
-use tracing::instrument;
 use ws_client::FrameCollector;
 
 #[derive(Deserialize)]
@@ -16,7 +15,6 @@ struct LogResult {
 }
 
 /// Extracts and deserializes log responses from WebSocket frames
-#[instrument(skip_all)]
 pub async fn extract_frame(
     ws: &mut FrameCollector,
     frame: Frame<'_>,

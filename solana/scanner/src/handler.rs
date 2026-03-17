@@ -4,11 +4,9 @@ use shared::result::Rs;
 use sol_lib::pumpfun;
 use solana_client::rpc_response::{OptionSerializer, RpcConfirmedTransactionStatusWithSignature};
 use solana_client::{nonblocking::rpc_client::RpcClient, rpc_config::RpcTransactionConfig};
-use tracing::instrument;
 
 use crate::{COMMITMENT, CONCURRENCY_SIGNATURE};
 
-#[instrument(skip_all)]
 pub async fn consume_txs(
     db: &DatabaseConnection,
     client: &RpcClient,
@@ -28,7 +26,6 @@ pub async fn consume_txs(
     }
 }
 
-#[instrument(skip_all)]
 async fn handle_tx(
     client: &RpcClient,
     _db: &DatabaseConnection,

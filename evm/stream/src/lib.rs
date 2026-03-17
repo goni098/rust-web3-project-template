@@ -5,7 +5,6 @@ use evm_lib::{
     uniswap_v3::{UniswapPoolV3::UniswapPoolV3Events, WETH_USDC_V3_POOL, WETH_USDT_V3_POOL},
 };
 use shared::result::{AppErr, Rs};
-use tracing::instrument;
 
 enum Event {
     UniswapV3(Log<UniswapPoolV3Events>),
@@ -13,8 +12,7 @@ enum Event {
 }
 
 impl Event {
-    #[instrument(skip_all)]
-    fn decode_log(log: &RpcLog) -> Rs<Self> {
+        fn decode_log(log: &RpcLog) -> Rs<Self> {
         let address = log.address();
 
         let event = if address == WETH_USDT_V3_POOL || address == WETH_USDC_V3_POOL {
@@ -29,7 +27,6 @@ impl Event {
     }
 }
 
-#[instrument(skip_all)]
 pub async fn handle_log(_db: &DatabaseConnection, log: &RpcLog) -> Rs<()> {
     let event = Event::decode_log(log)?;
 

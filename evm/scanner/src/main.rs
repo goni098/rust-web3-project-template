@@ -15,7 +15,6 @@ use evm_lib::{
 use futures_util::future::try_join_all;
 use shared::{env::Env, result::Rs};
 use tokio::time::sleep;
-use tracing::instrument;
 
 #[tokio::main]
 async fn main() {
@@ -24,7 +23,6 @@ async fn main() {
     bootstrap(shared::arg::parse_chain_arg()).await.unwrap();
 }
 
-#[instrument(skip_all)]
 async fn bootstrap(chain: u64) -> Rs<()> {
     let db_url = shared::env::read(Env::DatabaseUrl);
     let db = database::establish_connection(&db_url).await?;
@@ -85,7 +83,6 @@ async fn bootstrap(chain: u64) -> Rs<()> {
     }
 }
 
-#[instrument(skip_all)]
 async fn scan(
     client: &PublicClient,
     db: &DatabaseConnection,

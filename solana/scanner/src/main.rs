@@ -8,7 +8,7 @@ use sol_lib::pumpfun;
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_commitment_config::CommitmentConfig;
 use solana_sdk::signature::Signature;
-use tracing::{error, info, instrument};
+use tracing::{error, info};
 
 use crate::cursor::load_or_init_cursor;
 use crate::handler::consume_txs;
@@ -56,7 +56,6 @@ async fn main() {
     }
 }
 
-#[instrument(skip_all)]
 async fn scan(db: &DatabaseConnection, client: &RpcClient, cursor: &mut Signature) -> Rs<()> {
     let sigs = retrieve_txs(client, cursor).await?;
     let next_curor = sigs.first().and_then(|tx| tx.signature.parse().ok());

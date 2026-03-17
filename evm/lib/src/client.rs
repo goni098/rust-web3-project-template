@@ -18,7 +18,6 @@ use shared::{
     result::{AppErr, Rs},
 };
 use tower::ServiceBuilder;
-use tracing::instrument;
 use url::Url;
 
 /// Provider with chain ID filling
@@ -79,8 +78,7 @@ pub trait SendEip1559 {
 }
 
 impl SendEip1559 for WalletClient {
-    #[instrument(skip_all)]
-    async fn send_eip1559_tx(
+        async fn send_eip1559_tx(
         &self,
         mut tx: TransactionRequest,
         buffer_gas: u8,
@@ -120,8 +118,7 @@ impl SendEip1559 for WalletClient {
         }
     }
 
-    #[instrument(skip_all)]
-    async fn try_to_send_eip1559_tx(
+        async fn try_to_send_eip1559_tx(
         &self,
         tx: TransactionRequest,
         sender: Option<Address>,

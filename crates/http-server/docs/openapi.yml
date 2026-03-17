@@ -6,6 +6,23 @@ info:
         Api document.
 
 paths:
+    /users/sign-in:
+        post:
+            summary: Sign in
+            tags:
+                - users
+            description: |
+                Returns a random number. Placeholder sign-in endpoint.
+            responses:
+                "200":
+                    description: Successfully signed in
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/SignIn"
+                "500":
+                    description: Internal server error
+
     /users/me:
         get:
             summary: who am i
@@ -32,6 +49,14 @@ components:
             description: auth token
 
     schemas:
+        SignIn:
+            type: object
+            properties:
+                num:
+                    type: integer
+                    format: int64
+                    minimum: 0
+
         Me:
             type: object
             properties:

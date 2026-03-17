@@ -1,5 +1,4 @@
 use alloy::primitives::U256;
-use tracing::instrument;
 
 use crate::result::{AppErr, Rs};
 
@@ -57,15 +56,13 @@ impl Percent for u128 {
 }
 
 impl CheckedPercent for U256 {
-    #[instrument(skip_all)]
-    fn checked_percent(&self, percent: u8) -> Rs<Self> {
+        fn checked_percent(&self, percent: u8) -> Rs<Self> {
         self.checked_div(Self::from(100))
             .and_then(|amount| amount.checked_mul(Self::from(percent)))
             .ok_or(AppErr::custom("Operate units none error"))
     }
 
-    #[instrument(skip_all)]
-    fn checked_percent_f32(&self, percent: f32) -> Rs<Self> {
+        fn checked_percent_f32(&self, percent: f32) -> Rs<Self> {
         let precision = 1_000_000f32;
         let precision_unit = Self::from(precision as u64);
 

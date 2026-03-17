@@ -3,10 +3,9 @@ use shared::result::Rs;
 use sol_lib::pumpfun;
 use solana_client::rpc_response::{Response, RpcLogsResponse};
 use solana_sdk::signature::Signature;
-use tracing::{debug, info, instrument, warn};
+use tracing::{debug, info, warn};
 
 /// Processes a Solana log response and extracts/handles events
-#[instrument(skip_all)]
 pub async fn handle_response_log(
     db: &DatabaseConnection,
     res: Response<RpcLogsResponse>,
@@ -42,7 +41,6 @@ pub async fn handle_response_log(
 }
 
 /// Processes individual blockchain events
-#[instrument(skip_all)]
 async fn handle_events(
     _db: &DatabaseConnection,
     _signature: &str,
