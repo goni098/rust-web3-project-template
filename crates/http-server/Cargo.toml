@@ -17,6 +17,9 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 fastwebsockets = { workspace = true }
 rand = { workspace = true }
+solana-sdk = { workspace = true }
+chrono = { workspace = true }
+alloy = { workspace = true }
 
 shared = { path = "../shared" }
 database = { path = "../database" }

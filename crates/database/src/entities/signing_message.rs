@@ -4,10 +4,11 @@ use sea_orm::entity::prelude::*;
 use serde::Serialize;
 
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize)]
-#[sea_orm(table_name = "user")]
+#[sea_orm(table_name = "signing_message")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    pub wallet_address: String,
+    pub address: String,
+    pub message: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

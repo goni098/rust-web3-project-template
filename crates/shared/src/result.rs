@@ -57,6 +57,18 @@ pub enum AppErr {
         source: solana_sdk::signature::ParseSignatureError,
         location: Location,
     },
+
+    #[error("ParseHexAddress: {source}")]
+    ParseHexAddress {
+        source: alloy::hex::FromHexError,
+        location: Location,
+    },
+
+    #[error("ParseSolanaPubkey: {source}")]
+    ParseSolanaPubkey {
+        source: solana_sdk::pubkey::ParsePubkeyError,
+        location: Location,
+    },
 }
 
 macro_rules! impl_from_tracked {
@@ -84,6 +96,8 @@ impl_from_tracked!(alloy::sol_types::Error, SolTypes);
 impl_from_tracked!(alloy::providers::PendingTransactionError, WaitReceiptTx);
 impl_from_tracked!(solana_client::client_error::ClientError, SolanaClient);
 impl_from_tracked!(solana_sdk::signature::ParseSignatureError, ParseSignature);
+impl_from_tracked!(solana_sdk::pubkey::ParsePubkeyError, ParseSolanaPubkey);
+impl_from_tracked!(alloy::hex::FromHexError, ParseHexAddress);
 
 pub type Rs<T> = Result<T, AppErr>;
 
@@ -99,6 +113,8 @@ impl AppErr {
             AppErr::SolTypes { location, .. } => location,
             AppErr::SolanaClient { location, .. } => location,
             AppErr::WaitReceiptTx { location, .. } => location,
+            AppErr::ParseHexAddress { location, .. } => location,
+            AppErr::ParseSolanaPubkey { location, .. } => location,
         }
     }
 

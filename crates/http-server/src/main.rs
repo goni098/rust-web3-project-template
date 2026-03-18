@@ -4,6 +4,7 @@ use tracing::info;
 
 use crate::extractors::state::AppState;
 
+mod common;
 mod exception;
 mod extractors;
 mod handlers;
@@ -28,6 +29,7 @@ async fn main() -> Result<(), std::io::Error> {
             "/docs",
             get(async || Html(include_str!("../docs/openapi.html"))),
         )
+        .merge(handlers::auth::routes())
         .merge(handlers::users::routes())
         .merge(handlers::ws::routes())
         .layer(CorsLayer::permissive())

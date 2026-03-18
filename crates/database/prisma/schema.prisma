@@ -3,7 +3,7 @@ datasource db {
 }
 
 model user {
-  id BigInt @id
+  wallet_address String @id @db.VarChar(44)
 }
 
 model setting {
@@ -17,4 +17,9 @@ model log_memo {
   timestamp BigInt
 
   @@id([hash, log_ix])
+}
+
+model signing_message {
+  address String @id @db.VarChar(44)
+  message String @db.VarChar(98)
 }

@@ -63,6 +63,30 @@ pub enum HttpException {
         location: Location,
     },
 
+    #[error("ParseAddress: {source}")]
+    ParseAddress {
+        source: alloy::primitives::hex::FromHexError,
+        location: Location,
+    },
+
+    #[error("ParseSignature: {source}")]
+    ParseSignature {
+        source: alloy::primitives::SignatureError,
+        location: Location,
+    },
+
+    #[error("ParseSolanaPubkey: {source}")]
+    ParseSolanaPubkey {
+        source: solana_sdk::pubkey::ParsePubkeyError,
+        location: Location,
+    },
+
+    #[error("ParseSolanaSignature: {source}")]
+    ParseSolanaSignature {
+        source: solana_sdk::signature::ParseSignatureError,
+        location: Location,
+    },
+
     // AppErr already carries its own location — no need to duplicate
     #[error(transparent)]
     App(#[from] AppErr),
@@ -90,6 +114,10 @@ impl_from_tracked!(axum::extract::rejection::FormRejection, FormRejection);
 impl_from_tracked!(axum::extract::rejection::QueryRejection, QueryRejection);
 impl_from_tracked!(axum::extract::rejection::JsonRejection, BodyRejection);
 impl_from_tracked!(ParseIntError, ParseInt);
+impl_from_tracked!(alloy::primitives::hex::FromHexError, ParseAddress);
+impl_from_tracked!(alloy::primitives::SignatureError, ParseSignature);
+impl_from_tracked!(solana_sdk::pubkey::ParsePubkeyError, ParseSolanaPubkey);
+impl_from_tracked!(solana_sdk::signature::ParseSignatureError, ParseSolanaSignature);
 
 impl HttpException {
     fn location(&self) -> Location {
@@ -103,6 +131,10 @@ impl HttpException {
             Self::Unauthorized { location, .. } => location,
             Self::Internal { location, .. } => location,
             Self::ParseInt { location, .. } => location,
+            Self::ParseAddress { location, .. } => location,
+            Self::ParseSignature { location, .. } => location,
+            Self::ParseSolanaPubkey { location, .. } => location,
+            Self::ParseSolanaSignature { location, .. } => location,
             Self::App(error) => error.location(),
         }
     }

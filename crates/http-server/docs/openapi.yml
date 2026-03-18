@@ -6,39 +6,158 @@ info:
         Api document.
 
 paths:
-    /users/sign-in:
+    /auth/signing-msg:
         post:
-            summary: Sign in
+            summary: Request signing message
             tags:
-                - users
+                - auth
             description: |
-                Returns a random number. Placeholder sign-in endpoint.
+                Generates a signing message for the given wallet address (EVM or Solana).
+                The message must be signed and submitted to the sign-in endpoint.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - address
+                            properties:
+                                address:
+                                    type: string
+                                    description: EVM or Solana wallet address
             responses:
                 "200":
-                    description: Successfully signed in
+                    description: Signing message generated
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/SignIn"
-                "500":
-                    description: Internal server error
+                                type: object
+                                required:
+                                    - msg
+                                properties:
+                                    msg:
+                                        type: string
+                                        description: The message to be signed by the wallet
+
+    /auth/sign-in-evm:
+        post:
+            summary: Sign in with EVM wallet
+            tags:
+                - auth
+            description: |
+                Verifies an EVM signature against the previously requested signing message.
+                Returns a JWT token on success.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - address
+                                - message
+                                - signature
+                            properties:
+                                address:
+                                    type: string
+                                    description: EVM wallet address (checksummed hex)
+                                message:
+                                    type: string
+                                    description: The signing message that was signed
+                                signature:
+                                    type: string
+                                    description: Hex-encoded EVM signature
+            responses:
+                "200":
+                    description: Successfully authenticated, JWT token returned
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                required:
+                                    - token
+                                properties:
+                                    token:
+                                        type: string
+                                        description: JWT bearer token
+
+    /auth/sign-in-sol:
+        post:
+            summary: Sign in with Solana wallet
+            tags:
+                - auth
+            description: |
+                Verifies a Solana signature against the previously requested signing message.
+                Returns a JWT token on success.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - address
+                                - message
+                                - signature
+                            properties:
+                                address:
+                                    type: string
+                                    description: Solana wallet public key (base58)
+                                message:
+                                    type: string
+                                    description: The signing message that was signed
+                                signature:
+                                    type: string
+                                    description: Base58-encoded Solana signature
+            responses:
+                "200":
+                    description: Successfully authenticated, JWT token returned
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                required:
+                                    - token
+                                properties:
+                                    token:
+                                        type: string
+                                        description: JWT bearer token
 
     /users/me:
         get:
-            summary: who am i
+            summary: Get current user
             tags:
                 - users
             security:
                 - BearerAuth: []
             description: |
-                Returns user information
+                Returns the authenticated user's wallet address.
             responses:
                 "200":
-                    description: Successfully signed in
+                    description: User info returned
                     content:
                         application/json:
                             schema:
-                                $ref: "#/components/schemas/Me"
+                                type: object
+                                required:
+                                    - address
+                                properties:
+                                    address:
+                                        type: string
+                                        description: The authenticated user's wallet address
+
+    /random-u64:
+        get:
+            summary: Random u64 WebSocket stream
+            tags:
+                - ws
+            description: |
+                WebSocket endpoint. Streams a random u64 value as a binary frame every second.
+
+            responses:
+                "101":
+                    description: Switching protocols (WebSocket upgrade)
 
 components:
     securitySchemes:
@@ -47,18 +166,3 @@ components:
             scheme: bearer
             bearerFormat: JWT
             description: auth token
-
-    schemas:
-        SignIn:
-            type: object
-            properties:
-                num:
-                    type: integer
-                    format: int64
-                    minimum: 0
-
-        Me:
-            type: object
-            properties:
-                id:
-                    type: integer

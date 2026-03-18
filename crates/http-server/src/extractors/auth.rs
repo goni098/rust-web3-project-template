@@ -13,18 +13,12 @@ use axum_extra::{
 };
 use jsonwebtoken::{DecodingKey, Validation, errors::ErrorKind};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
+use shared::UnionAddress;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Claims {
     pub exp: u32,
-    pub id: i64,
-}
-
-#[allow(dead_code)]
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Sub {
-    pub exp: u32,
-    pub sub: i64,
+    pub address: UnionAddress,
 }
 
 pub struct Auth(pub Claims);

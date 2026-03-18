@@ -12,3 +12,5 @@ sea-orm = { workspace = true }
 alloy = { workspace = true }
 solana-sdk = { workspace = true }
 solana-client = { workspace = true }
+serde = { workspace = true }
+validator = { workspace = true }
