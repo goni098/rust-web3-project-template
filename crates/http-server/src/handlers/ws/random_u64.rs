@@ -41,7 +41,7 @@ async fn handle_client(fut: UpgradeFut) -> Result<(), WebSocketError> {
                 let frame = match frame {
                     Ok(f) => f,
                     Err(WebSocketError::UnexpectedEOF) => {
-                        tracing::info!("client disconnected");
+                        tracing::trace!("client disconnected");
                         return Ok(());
                     }
                     Err(e) => return Err(e),
@@ -53,7 +53,7 @@ async fn handle_client(fut: UpgradeFut) -> Result<(), WebSocketError> {
                     }
                     OpCode::Ping => ws.write_frame(Frame::pong(frame.payload)).await?,
                     OpCode::Binary | OpCode::Text => {
-                        tracing::info!("received from client {:?}", frame.payload);
+                        tracing::trace!("received from client {:?}", frame.payload);
                     }
                     _ => {}
                 }

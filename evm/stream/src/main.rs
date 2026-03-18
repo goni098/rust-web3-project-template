@@ -7,7 +7,7 @@ use std::{
 use alloy::rpc::types::Filter;
 use database::sea_orm::DatabaseConnection;
 use evm_lib::{
-    uniswap_v2::{UniswapPoolV2::UniswapPoolV2Events, WETH_USDC_V2_POOL},
+    SupportedChain, uniswap_v2::UniswapPoolV2::UniswapPoolV2Events,
     uniswap_v3::UniswapPoolV3::UniswapPoolV3Events,
 };
 use fastwebsockets::{Frame, OpCode, Payload, WebSocketError};
@@ -28,18 +28,21 @@ async fn main() {
     shared::env::load();
     shared::tracing::subscribe();
 
-    let chain = shared::arg::parse_chain_arg();
-    let db_url = shared::env::read(Env::DatabaseUrl);
-    let ws_rpc = shared::env::read(Env::EvmWsRpc(chain));
+    let chain_id = shared::arg::parse_chain_id_arg();
+    let chain = SupportedChain::try_from(chain_id).expect("invalid chain id");
 
-    let uri = Uri::from_str(&ws_rpc).unwrap_or_else(|_| panic!("invalid ws rpc chain {}", chain));
+    let db_url = shared::env::read(Env::DatabaseUrl);
+    let ws_rpc = shared::env::read(Env::EvmWsRpc(chain_id));
+
+    let uri =
+        Uri::from_str(&ws_rpc).unwrap_or_else(|_| panic!("invalid ws rpc chain {}", chain_id));
 
     let db = database::establish_connection(&db_url)
         .await
         .unwrap_or_else(|error| panic!("Db error {}", error));
 
     loop {
-        if let Err(err) = bootstrap(&db, &uri).await {
+        if let Err(err) = bootstrap(&db, &uri, chain).await {
             tracing::error!("WebSocketError >> {}", err);
         }
 
@@ -47,7 +50,11 @@ async fn main() {
     }
 }
 
-async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketError> {
+async fn bootstrap(
+    db: &DatabaseConnection,
+    uri: &Uri,
+    chain: SupportedChain,
+) -> Result<(), WebSocketError> {
     let mut ping_clock = tokio::time::interval(Duration::from_secs(PING_INTERVAL_SECS));
 
     let mut ws = ws_client::connect(uri).await?;
@@ -55,9 +62,8 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
 
     let filter = Filter::new()
         .address(vec![
-            // WETH_USDT_V3_POOL,
-            // WETH_USDC_V3_POOL,
-            WETH_USDC_V2_POOL,
+            chain.usdt_weth_pool_v2_address(),
+            chain.usdt_weth_pool_v3_address(),
         ])
         .events(
             [
@@ -84,7 +90,6 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
         tokio::select! {
             frame = ws.read_frame() => {
                 if let Some(log) = extractor::extract_frame(frame?, &mut ws).await? {
-
                     evm_stream::handle_log(db, &log)
                         .await
                         .unwrap_or_else(|error| {

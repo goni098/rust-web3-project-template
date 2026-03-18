@@ -25,7 +25,7 @@ pub async fn retrieve_txs(
         .await?;
 
     if page.is_empty() {
-        tracing::info!("No new tx found");
+        tracing::trace!("No new tx found");
         return Ok(page);
     }
 

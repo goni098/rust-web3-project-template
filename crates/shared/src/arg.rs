@@ -2,7 +2,7 @@
 ///
 /// # Panics
 /// Panics if the chain_id argument is missing or not a valid u64
-pub fn parse_chain_arg() -> u64 {
+pub fn parse_chain_id_arg() -> u64 {
     let args: Vec<String> = std::env::args().collect();
 
     args.get(2)

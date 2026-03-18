@@ -11,7 +11,7 @@ pub async fn load_or_init_cursor(db: &DatabaseConnection, client: &RpcClient) ->
     if let Some(sig) = repositories::settings::get(db, Setting::SolCurrentScannedSignature).await? {
         Ok(sig.parse()?)
     } else {
-        tracing::info!("Finding the first signature of program...");
+        tracing::trace!("Finding the first signature of program...");
 
         let sig = get_the_first_signature(client)
             .await?

@@ -13,7 +13,6 @@ use solana_client::rpc_config::{
     CommitmentConfig, RpcTransactionLogsConfig, RpcTransactionLogsFilter,
 };
 use tokio::time::sleep;
-use tracing::{error, info};
 
 use crate::handler::handle_log_from_ws;
 
@@ -45,7 +44,7 @@ async fn main() {
 
     loop {
         if let Err(err) = bootstrap(&db, &uri).await {
-            error!("WebSocket connection error, reconnecting... {}", err);
+            tracing::error!("WebSocket connection error, reconnecting... {}", err);
         }
 
         sleep(Duration::from_secs(DELAY_RECONNECT)).await;
@@ -56,7 +55,7 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
     let mut ping_clock = tokio::time::interval(Duration::from_secs(PING_INTERVAL_SECS));
 
     let mut ws = ws_client::connect(uri).await?;
-    info!("WebSocket connected {}", uri);
+    tracing::info!("WebSocket connected {}", uri);
 
     let filter = RpcTransactionLogsFilter::Mentions(vec![pumpfun::ID.to_string()]);
 
@@ -82,7 +81,7 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
             frame = ws.read_frame() => {
                 if let Some(res) = extractor::extract_frame(&mut ws, frame?).await? {
                     match handle_log_from_ws(db, res).await {
-                        Ok(Some(signature)) => info!("Processed transaction {}", signature),
+                        Ok(Some(signature)) => tracing::info!("Processed transaction {}", signature),
                         Ok(None) => {},
                         Err(error) => error.trace("Failed to handle log"),
                     }

@@ -31,7 +31,7 @@ async fn handle_tx(
     db: &DatabaseConnection,
     tx: &RpcConfirmedTransactionStatusWithSignature,
 ) -> Rs<()> {
-    tracing::info!("processing signature {}", tx.signature);
+    tracing::trace!("processing signature {}", tx.signature);
     let signature = tx.signature.parse()?;
 
     let config = RpcTransactionConfig {

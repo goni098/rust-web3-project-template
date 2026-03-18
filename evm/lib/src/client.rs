@@ -20,6 +20,8 @@ use shared::{
 use tower::ServiceBuilder;
 use url::Url;
 
+use crate::SupportedChain;
+
 /// Provider with chain ID filling
 pub type PublicClient = FillProvider<JoinFill<Identity, ChainIdFiller>, RootProvider>;
 
@@ -30,22 +32,25 @@ pub type WalletClient = FillProvider<
 >;
 
 /// Creates a public client for reading blockchain state
-pub fn create_public_client(chain: u64) -> PublicClient {
-    let client = create_root_client(chain);
+pub fn create_public_client(chain: SupportedChain) -> PublicClient {
+    let chain_id = chain.to_chain_id();
+    let client = create_root_client(chain_id);
 
     ProviderBuilder::new()
         .disable_recommended_fillers()
-        .with_chain_id(chain)
+        .with_chain_id(chain_id)
         .connect_client(client)
 }
 
 /// Creates a wallet client for signing and sending transactions
-/// 
+///
 /// # Arguments
 /// * `chain` - The chain ID to connect to
 /// * `signers` - List of private key signers to register
-pub fn create_wallet_client(chain: u64, signers: Vec<PrivateKeySigner>) -> WalletClient {
-    let client = create_root_client(chain);
+pub fn create_wallet_client(chain: SupportedChain, signers: Vec<PrivateKeySigner>) -> WalletClient {
+    let chain_id = chain.to_chain_id();
+
+    let client = create_root_client(chain_id);
 
     let wallet = signers
         .into_iter()
@@ -56,7 +61,7 @@ pub fn create_wallet_client(chain: u64, signers: Vec<PrivateKeySigner>) -> Walle
 
     ProviderBuilder::new()
         .disable_recommended_fillers()
-        .with_chain_id(chain)
+        .with_chain_id(chain_id)
         .wallet(wallet)
         .connect_client(client)
 }
@@ -78,7 +83,7 @@ pub trait SendEip1559 {
 }
 
 impl SendEip1559 for WalletClient {
-        async fn send_eip1559_tx(
+    async fn send_eip1559_tx(
         &self,
         mut tx: TransactionRequest,
         buffer_gas: u8,
@@ -118,7 +123,7 @@ impl SendEip1559 for WalletClient {
         }
     }
 
-        async fn try_to_send_eip1559_tx(
+    async fn try_to_send_eip1559_tx(
         &self,
         tx: TransactionRequest,
         sender: Option<Address>,
@@ -126,7 +131,7 @@ impl SendEip1559 for WalletClient {
         const MAX_ATTEMPTS: u8 = 3;
         const TX_TIMEOUT_SECS: u64 = 90;
         const RETRY_DELAY_SECS: u64 = 2;
-        
+
         let mut attempt = 0;
 
         loop {
@@ -154,11 +159,11 @@ impl SendEip1559 for WalletClient {
     }
 }
 
-fn create_root_client(chain: u64) -> RpcClient {
+fn create_root_client(chain_id: u64) -> RpcClient {
     let fallback_layer =
         FallbackLayer::default().with_active_transport_count(NonZeroUsize::new(2).unwrap());
 
-    let (public_rpc, private_rpc) = read_rpcs_by_chain(chain);
+    let (public_rpc, private_rpc) = read_rpcs_by_chain(chain_id);
 
     let transports = [Http::new(private_rpc), Http::new(public_rpc)].to_vec();
 
@@ -169,14 +174,14 @@ fn create_root_client(chain: u64) -> RpcClient {
     RpcClient::builder().transport(transport, false)
 }
 
-fn read_rpcs_by_chain(chain: u64) -> (Url, Url) {
-    let public_rpc = shared::env::read(Env::PubEvmRpc(chain))
+fn read_rpcs_by_chain(chain_id: u64) -> (Url, Url) {
+    let public_rpc = shared::env::read(Env::PubEvmRpc(chain_id))
         .parse()
-        .unwrap_or_else(|_| panic!("invalid public rpc, chain {}", chain));
+        .unwrap_or_else(|_| panic!("invalid public rpc, chain {}", chain_id));
 
-    let private_rpc = shared::env::read(Env::PriEvmRpc(chain))
+    let private_rpc = shared::env::read(Env::PriEvmRpc(chain_id))
         .parse()
-        .unwrap_or_else(|_| panic!("invalid private rpc, chain {}", chain));
+        .unwrap_or_else(|_| panic!("invalid private rpc, chain {}", chain_id));
 
     (public_rpc, private_rpc)
 }

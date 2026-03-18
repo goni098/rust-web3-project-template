@@ -9,5 +9,6 @@ tower = { workspace = true }
 url = { workspace = true }
 tokio = { workspace = true }
 tracing = { workspace = true }
+strum = { workspace = true }
 
 shared = { path = "../../crates/shared" }

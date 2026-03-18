@@ -8,9 +8,10 @@ use alloy::{
 use database::repositories::settings::Setting;
 use database::{repositories, sea_orm::DatabaseConnection};
 use evm_lib::{
+    SupportedChain,
     client::{PublicClient, create_public_client},
-    uniswap_v2::{UniswapPoolV2::UniswapPoolV2Events, WETH_USDC_V2_POOL},
-    uniswap_v3::{UniswapPoolV3::UniswapPoolV3Events, WETH_USDC_V3_POOL, WETH_USDT_V3_POOL},
+    uniswap_v2::UniswapPoolV2::UniswapPoolV2Events,
+    uniswap_v3::UniswapPoolV3::UniswapPoolV3Events,
 };
 use futures_util::future::try_join_all;
 use shared::{env::Env, result::Rs};
@@ -20,18 +21,19 @@ use tokio::time::sleep;
 async fn main() {
     shared::env::load();
     shared::tracing::subscribe();
-    bootstrap(shared::arg::parse_chain_arg()).await.unwrap();
+    bootstrap(shared::arg::parse_chain_id_arg()).await.unwrap();
 }
 
-async fn bootstrap(chain: u64) -> Rs<()> {
+async fn bootstrap(chain_id: u64) -> Rs<()> {
     let db_url = shared::env::read(Env::DatabaseUrl);
     let db = database::establish_connection(&db_url).await?;
 
+    let chain = SupportedChain::try_from(chain_id)?;
     let client = create_public_client(chain);
 
     let current_scanned_block = {
         let scanned_block =
-            repositories::settings::get(&db, Setting::EvmScannedBlock(chain)).await?;
+            repositories::settings::get(&db, Setting::EvmScannedBlock(chain_id)).await?;
 
         if let Some(scanned_block) = scanned_block {
             scanned_block.parse()?
@@ -39,7 +41,7 @@ async fn bootstrap(chain: u64) -> Rs<()> {
             let latest_block = client.get_block_number().await?;
             repositories::settings::insert(
                 &db,
-                Setting::EvmScannedBlock(chain),
+                Setting::EvmScannedBlock(chain_id),
                 latest_block.to_string(),
             )
             .await?;
@@ -48,11 +50,13 @@ async fn bootstrap(chain: u64) -> Rs<()> {
     };
 
     let mut filter = Filter::new()
-        .address(vec![
-            WETH_USDT_V3_POOL,
-            WETH_USDC_V3_POOL,
-            WETH_USDC_V2_POOL,
-        ])
+        .address(
+            [
+                chain.usdt_weth_pool_v2_address(),
+                chain.usdt_weth_pool_v3_address(),
+            ]
+            .to_vec(),
+        )
         .events(
             [
                 UniswapPoolV3Events::SIGNATURES,
@@ -81,7 +85,7 @@ async fn bootstrap(chain: u64) -> Rs<()> {
 async fn scan(
     client: &PublicClient,
     db: &DatabaseConnection,
-    chain: u64,
+    chain: SupportedChain,
     filter: &mut Filter,
 ) -> Rs<u64> {
     let latest_block = client.get_block_number().await?;
@@ -108,19 +112,23 @@ async fn scan(
 
     try_join_all(tasks).await?;
 
-    tracing::info!("scanned from {} to {} successfully", from_block, to_block,);
+    tracing::trace!("scanned from {} to {} successfully", from_block, to_block,);
 
     let next_block = to_block + 1;
 
-    repositories::settings::set(db, Setting::EvmScannedBlock(chain), next_block.to_string())
-        .await?;
+    repositories::settings::set(
+        db,
+        Setting::EvmScannedBlock(chain.to_chain_id()),
+        next_block.to_string(),
+    )
+    .await?;
 
     Ok(next_block)
 }
 
-fn block_range_by_chain(chain: u64) -> u64 {
+fn block_range_by_chain(chain: SupportedChain) -> u64 {
     match chain {
-        1 => 1998,
-        _ => 2000,
+        SupportedChain::Bsc => 1998,
+        SupportedChain::Mainet => 2000,
     }
 }

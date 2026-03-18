@@ -2552,6 +2552,7 @@ version = "0.1.0"
 dependencies = [
  "alloy",
  "shared",
+ "strum 0.28.0",
  "tokio",
  "tower",
  "tracing",

@@ -1,6 +1,5 @@
 use axum::{Router, response::Html, routing::get};
 use tower_http::cors::CorsLayer;
-use tracing::info;
 
 use crate::extractors::state::AppState;
 
@@ -38,7 +37,7 @@ async fn main() -> Result<(), std::io::Error> {
     let addr = format!("0.0.0.0:{}", SERVER_PORT);
     let listener = tokio::net::TcpListener::bind(&addr).await?;
 
-    info!("Server is running {}", listener.local_addr()?);
+    tracing::info!("Server is running {}", listener.local_addr()?);
 
     axum::serve(listener, app).await?;
 

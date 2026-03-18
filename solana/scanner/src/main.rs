@@ -8,7 +8,6 @@ use sol_lib::pumpfun;
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_commitment_config::CommitmentConfig;
 use solana_sdk::signature::Signature;
-use tracing::info;
 
 use crate::cursor::load_or_init_cursor;
 use crate::handler::consume_txs;
@@ -43,9 +42,9 @@ async fn main() {
         .await
         .unwrap_or_else(|error| panic!("find cursor error {}", error));
 
-    info!("Event scanner started on {}", pumpfun::ID);
+    tracing::info!("Event scanner started on {}", pumpfun::ID);
 
-    info!("Starting from signature {}", cursor);
+    tracing::info!("Starting from signature {}", cursor);
 
     loop {
         if let Err(error) = scan(&db, &client, &mut cursor).await {
