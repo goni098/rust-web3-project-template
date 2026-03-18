@@ -4,12 +4,13 @@ use sea_orm::entity::prelude::*;
 use serde::Serialize;
 
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize)]
-#[sea_orm(table_name = "signature")]
+#[sea_orm(table_name = "log_memo")]
 pub struct Model {
-    #[sea_orm(primary_key)]
-    pub id: i64,
-    pub sig: String,
-    pub ts: i64,
+    #[sea_orm(primary_key, auto_increment = false)]
+    pub hash: String,
+    #[sea_orm(primary_key, auto_increment = false)]
+    pub log_ix: i32,
+    pub timestamp: i64,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -28,7 +28,7 @@ pub async fn consume_txs(
 
 async fn handle_tx(
     client: &RpcClient,
-    _db: &DatabaseConnection,
+    db: &DatabaseConnection,
     tx: &RpcConfirmedTransactionStatusWithSignature,
 ) -> Rs<()> {
     tracing::info!("processing signature {}", tx.signature);
@@ -47,9 +47,10 @@ async fn handle_tx(
     if let Some(meta) = txn.transaction.meta
         && let OptionSerializer::Some(logs) = meta.log_messages
     {
-        let _timestamp = txn.block_time.unwrap_or_default();
+        let timestamp = txn.block_time.unwrap_or_default();
+        let events = pumpfun::utils::Event::from_logs(logs);
 
-        let _events = pumpfun::utils::Event::from_logs(logs);
+        solana_stream::handle_events(db, &signature, timestamp, events).await?;
     }
 
     Ok(())

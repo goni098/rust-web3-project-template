@@ -1,5 +1,5 @@
 use alloy::{primitives::Log, rpc::types::Log as RpcLog, sol_types::SolEventInterface};
-use database::sea_orm::DatabaseConnection;
+use database::{repositories::log_memos, sea_orm::DatabaseConnection};
 use evm_lib::{
     uniswap_v2::{UniswapPoolV2::UniswapPoolV2Events, WETH_USDC_V2_POOL},
     uniswap_v3::{UniswapPoolV3::UniswapPoolV3Events, WETH_USDC_V3_POOL, WETH_USDT_V3_POOL},
@@ -12,7 +12,7 @@ enum Event {
 }
 
 impl Event {
-        fn decode_log(log: &RpcLog) -> Rs<Self> {
+    fn decode_log(log: &RpcLog) -> Rs<Self> {
         let address = log.address();
 
         let event = if address == WETH_USDT_V3_POOL || address == WETH_USDC_V3_POOL {
@@ -27,7 +27,14 @@ impl Event {
     }
 }
 
-pub async fn handle_log(_db: &DatabaseConnection, log: &RpcLog) -> Rs<()> {
+pub async fn handle_log(db: &DatabaseConnection, log: &RpcLog) -> Rs<()> {
+    let hash = log.transaction_hash.unwrap_or_default();
+    let log_ix = log.log_index.unwrap_or_default() as i32;
+
+    if log_memos::is_existed(db, hash.to_string(), log_ix).await? {
+        return Ok(());
+    }
+
     let event = Event::decode_log(log)?;
 
     match event {
@@ -38,6 +45,14 @@ pub async fn handle_log(_db: &DatabaseConnection, log: &RpcLog) -> Rs<()> {
             tracing::info!("uniswap pool v3 event: {:#?}", event);
         }
     }
+
+    log_memos::save(
+        db,
+        hash.to_string(),
+        log_ix,
+        log.block_timestamp.unwrap_or_default() as i64,
+    )
+    .await?;
 
     Ok(())
 }

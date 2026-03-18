@@ -12,7 +12,7 @@ use sol_lib::pumpfun;
 use solana_client::rpc_config::{
     CommitmentConfig, RpcTransactionLogsConfig, RpcTransactionLogsFilter,
 };
-use solana_stream::{extrator, handler::handle_response_log};
+use solana_stream::{extrator, handler::handle_log_from_ws};
 use tokio::time::sleep;
 use tracing::{error, info};
 
@@ -77,7 +77,7 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
         tokio::select! {
             frame = ws.read_frame() => {
                 if let Some(res) = extrator::extract_frame(&mut ws, frame?).await? {
-                    match handle_response_log(db, res).await {
+                    match handle_log_from_ws(db, res).await {
                         Ok(Some(signature)) => info!("Processed transaction {}", signature),
                         Ok(None) => {},
                         Err(error) => error.trace("Failed to handle log"),

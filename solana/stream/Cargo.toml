@@ -12,6 +12,7 @@ serde = { workspace = true }
 tracing = { workspace = true }
 hyper = { workspace = true }
 solana-sdk = { workspace = true }
+futures-util = { workspace = true }
 
 ws-client = { path = "../../crates/ws-client" }
 database = { path = "../../crates/database" }

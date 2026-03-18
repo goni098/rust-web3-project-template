@@ -15,3 +15,4 @@ futures-util = { workspace = true }
 shared = { path = "../../crates/shared" }
 database = { path = "../../crates/database" }
 sol-lib = { path = "../lib" }
+solana-stream = { path = "../stream" }

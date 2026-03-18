@@ -1,22 +1,26 @@
-use database::sea_orm::{DatabaseConnection, sea_query::prelude::Utc};
+use database::{
+    repositories::log_memos,
+    sea_orm::{DatabaseConnection, sea_query::prelude::Utc},
+};
+use futures_util::future::try_join_all;
 use shared::result::Rs;
 use sol_lib::pumpfun;
 use solana_client::rpc_response::{Response, RpcLogsResponse};
 use solana_sdk::signature::Signature;
 
 /// Processes a Solana log response and extracts/handles events
-pub async fn handle_response_log(
+pub async fn handle_log_from_ws(
     db: &DatabaseConnection,
     res: Response<RpcLogsResponse>,
-) -> Rs<Option<String>> {
-    let signature = res.value.signature;
+) -> Rs<Option<Signature>> {
+    let signature = res.value.signature.parse()?;
 
-    if signature == Signature::default().to_string() {
+    if signature == Signature::default() {
         return Ok(None);
     }
 
     if res.value.err.is_some() {
-        tracing::trace!("Skipping failed transaction,signature {}", signature);
+        tracing::trace!("Skipping failed transaction, signature {}", signature);
         return Ok(None);
     }
 
@@ -28,13 +32,36 @@ pub async fn handle_response_log(
 }
 
 /// Processes individual blockchain events
-async fn handle_events(
-    _db: &DatabaseConnection,
-    _signature: &str,
-    _timestamp: i64,
+pub async fn handle_events(
+    db: &DatabaseConnection,
+    signature: &Signature,
+    timestamp: i64,
     events: Vec<pumpfun::utils::Event>,
 ) -> Rs<()> {
-    tracing::info!("events: {:#?}", events);
+    let iter = events
+        .into_iter()
+        .enumerate()
+        .map(|(log_ix, event)| handle_event(db, signature, log_ix as i32, timestamp, event));
+
+    try_join_all(iter).await?;
+
+    Ok(())
+}
+
+async fn handle_event(
+    db: &DatabaseConnection,
+    signature: &Signature,
+    log_ix: i32,
+    timestamp: i64,
+    event: pumpfun::utils::Event,
+) -> Rs<()> {
+    if log_memos::is_existed(db, signature.to_string(), log_ix).await? {
+        return Ok(());
+    }
+
+    tracing::info!("event: {:#?}", event);
+
+    log_memos::save(db, signature.to_string(), log_ix, timestamp).await?;
 
     Ok(())
 }

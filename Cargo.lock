@@ -6884,6 +6884,7 @@ dependencies = [
  "solana-client",
  "solana-commitment-config",
  "solana-sdk",
+ "solana-stream",
  "solana-transaction-status",
  "tokio",
  "tracing",
@@ -7127,6 +7128,7 @@ version = "0.1.0"
 dependencies = [
  "database",
  "fastwebsockets",
+ "futures-util",
  "hyper",
  "serde",
  "serde_json",
