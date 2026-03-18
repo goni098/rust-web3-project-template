@@ -12,9 +12,13 @@ use sol_lib::pumpfun;
 use solana_client::rpc_config::{
     CommitmentConfig, RpcTransactionLogsConfig, RpcTransactionLogsFilter,
 };
-use solana_stream::{extrator, handler::handle_log_from_ws};
 use tokio::time::sleep;
 use tracing::{error, info};
+
+use crate::handler::handle_log_from_ws;
+
+mod extrator;
+mod handler;
 
 /// Commitment level for transaction logs
 const COMMITMENT: CommitmentConfig = CommitmentConfig::confirmed();

@@ -14,7 +14,6 @@ struct LogResult {
     result: Value,
 }
 
-/// Extracts and deserializes log responses from WebSocket frames
 pub async fn extract_frame(
     ws: &mut FrameCollector,
     frame: Frame<'_>,
