@@ -7,7 +7,10 @@ use crate::{
     extractors::auth::Claims,
 };
 
-pub fn sign(address: UnionAddress) -> HttpResult<String> {
+pub fn sign<A>(address: A) -> HttpResult<String>
+where
+    A: Into<UnionAddress>,
+{
     let header = Header::new(Algorithm::HS256);
 
     let access_secret = shared::env::read(Env::AccessTokenKey);
@@ -17,7 +20,7 @@ pub fn sign(address: UnionAddress) -> HttpResult<String> {
 
     let claims = Claims {
         exp: access_exp as u32,
-        address,
+        address: address.into(),
     };
 
     let token = jsonwebtoken::encode(

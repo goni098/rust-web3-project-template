@@ -1,23 +1,23 @@
 use sea_orm::{ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
-use shared::{UnionAddr, result::Rs};
+use shared::{UnionAddress, result::Rs};
 
 use crate::entities::user;
 
-pub async fn find_by_wallet_address<A: UnionAddr>(
+pub async fn find_by_wallet_address<A: Into<UnionAddress>>(
     db: &DatabaseConnection,
     address: A,
 ) -> Rs<Option<user::Model>> {
     let user = user::Entity::find()
-        .filter(user::Column::WalletAddress.eq(address.to_string()))
+        .filter(user::Column::WalletAddress.eq(address.into().to_string()))
         .one(db)
         .await?;
 
     Ok(user)
 }
 
-pub async fn save<A: UnionAddr>(db: &DatabaseConnection, address: A) -> Rs<()> {
+pub async fn save<A: Into<UnionAddress>>(db: &DatabaseConnection, address: A) -> Rs<()> {
     let user = user::ActiveModel {
-        wallet_address: Set(address.to_string()),
+        wallet_address: Set(address.into().to_string()),
     };
 
     user::Entity::insert(user)

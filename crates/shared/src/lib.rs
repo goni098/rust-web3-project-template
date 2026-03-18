@@ -19,6 +19,12 @@ pub enum UnionAddress {
     Sol(Pubkey),
 }
 
+#[derive(Clone, Copy)]
+pub enum UnionTxHash {
+    Evm(TxHash),
+    Sol(Signature),
+}
+
 impl FromStr for UnionAddress {
     type Err = AppErr;
 
@@ -43,15 +49,6 @@ impl From<Address> for UnionAddress {
     }
 }
 
-pub trait UnionAddr: ToString {}
-pub trait UnionTxHash: ToString {}
-
-impl UnionTxHash for TxHash {}
-impl UnionTxHash for Signature {}
-
-impl UnionAddr for Address {}
-impl UnionAddr for Pubkey {}
-
 impl Display for UnionAddress {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -61,4 +58,23 @@ impl Display for UnionAddress {
     }
 }
 
-impl UnionAddr for UnionAddress {}
+impl From<TxHash> for UnionTxHash {
+    fn from(value: TxHash) -> Self {
+        Self::Evm(value)
+    }
+}
+
+impl From<Signature> for UnionTxHash {
+    fn from(value: Signature) -> Self {
+        Self::Sol(value)
+    }
+}
+
+impl Display for UnionTxHash {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Evm(tx_hash) => tx_hash.fmt(f),
+            Self::Sol(signature) => signature.fmt(f),
+        }
+    }
+}

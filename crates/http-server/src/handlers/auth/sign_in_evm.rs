@@ -35,7 +35,7 @@ pub async fn handler(
     let address = address.parse::<Address>()?;
     let signature = signature.parse::<Signature>()?;
 
-    let Some(msg) = repositories::signing_messages::get(&db, address.into()).await? else {
+    let Some(msg) = repositories::signing_messages::get(&db, address).await? else {
         return Err(HttpException::unauthorized("msg was revoked"));
     };
 
@@ -51,7 +51,9 @@ pub async fn handler(
         return Err(HttpException::unauthorized("mismatch signature address"));
     }
 
-    let token = common::jwt::sign(address.into())?;
+    repositories::users::save(&db, address).await?;
+
+    let token = common::jwt::sign(address)?;
 
     let response = Response { token };
 

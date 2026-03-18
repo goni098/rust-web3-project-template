@@ -35,7 +35,7 @@ pub async fn handler(
     let address = address.parse::<Pubkey>()?;
     let signature = signature.parse::<Signature>()?;
 
-    let Some(msg) = repositories::signing_messages::get(&db, address.into()).await? else {
+    let Some(msg) = repositories::signing_messages::get(&db, address).await? else {
         return Err(HttpException::unauthorized("msg was revoked"));
     };
 
@@ -49,7 +49,7 @@ pub async fn handler(
         return Err(HttpException::unauthorized("invalid signature"));
     }
 
-    let token = common::jwt::sign(address.into())?;
+    let token = common::jwt::sign(address)?;
 
     let response = Response { token };
 

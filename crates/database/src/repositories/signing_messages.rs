@@ -9,7 +9,10 @@ use shared::{
 
 use crate::entities::signing_message;
 
-pub async fn allocate(db: &DatabaseConnection, address: UnionAddress, message: String) -> Rs<()> {
+pub async fn allocate<A>(db: &DatabaseConnection, address: A, message: String) -> Rs<()>
+where
+    A: Into<UnionAddress>,
+{
     if message.len() > 98 {
         return Err(AppErr::custom(
             "signing message's lenght can not greater than 98",
@@ -17,7 +20,7 @@ pub async fn allocate(db: &DatabaseConnection, address: UnionAddress, message: S
     }
 
     signing_message::Entity::insert(signing_message::ActiveModel {
-        address: Set(address.to_string()),
+        address: Set(address.into().to_string()),
         message: Set(message),
     })
     .on_conflict(
@@ -31,18 +34,24 @@ pub async fn allocate(db: &DatabaseConnection, address: UnionAddress, message: S
     Ok(())
 }
 
-pub async fn revoke(db: &DatabaseConnection, address: UnionAddress) -> Rs<()> {
+pub async fn revoke<A>(db: &DatabaseConnection, address: A) -> Rs<()>
+where
+    A: Into<UnionAddress>,
+{
     signing_message::Entity::delete_many()
-        .filter(signing_message::Column::Address.eq(address.to_string()))
+        .filter(signing_message::Column::Address.eq(address.into().to_string()))
         .exec(db)
         .await?;
 
     Ok(())
 }
 
-pub async fn get(db: &DatabaseConnection, address: UnionAddress) -> Rs<Option<String>> {
+pub async fn get<A>(db: &DatabaseConnection, address: A) -> Rs<Option<String>>
+where
+    A: Into<UnionAddress>,
+{
     let message = signing_message::Entity::find()
-        .filter(signing_message::Column::Address.eq(address.to_string()))
+        .filter(signing_message::Column::Address.eq(address.into().to_string()))
         .one(db)
         .await?
         .map(|row| row.message);
