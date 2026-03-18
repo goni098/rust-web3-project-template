@@ -72,8 +72,8 @@ tokio-rustls = { version = "0.26", default-features = false, features = [
 webpki-roots = { version = "1" }
 
 # solana
-solana-client = { version = "4.0.0-beta.2" }
-solana-sdk = { version = "4" }
+solana-client = { version = "3" }
+solana-sdk = { version = "3" }
 solana-transaction-status = { version = "3" }
 solana-commitment-config = { version = "3" }
 spl-associated-token-account-interface = { version = "2" }
