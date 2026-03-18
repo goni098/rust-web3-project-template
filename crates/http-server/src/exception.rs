@@ -6,36 +6,11 @@ use shared::result::AppErr;
 
 type Location = &'static core::panic::Location<'static>;
 
-#[allow(dead_code)]
 #[derive(thiserror::Error, Debug)]
 pub enum HttpException {
     #[error("Validation: {source}")]
     Validation {
         source: validator::ValidationErrors,
-        location: Location,
-    },
-
-    #[error("PathRejection: {source}")]
-    PathRejection {
-        source: axum::extract::rejection::PathRejection,
-        location: Location,
-    },
-
-    #[error("FormRejection: {source}")]
-    FormRejection {
-        source: axum::extract::rejection::FormRejection,
-        location: Location,
-    },
-
-    #[error("QueryRejection: {source}")]
-    QueryRejection {
-        source: axum::extract::rejection::QueryRejection,
-        location: Location,
-    },
-
-    #[error("BodyRejection: {source}")]
-    BodyRejection {
-        source: axum::extract::rejection::JsonRejection,
         location: Location,
     },
 
@@ -109,24 +84,19 @@ macro_rules! impl_from_tracked {
 }
 
 impl_from_tracked!(validator::ValidationErrors, Validation);
-impl_from_tracked!(axum::extract::rejection::PathRejection, PathRejection);
-impl_from_tracked!(axum::extract::rejection::FormRejection, FormRejection);
-impl_from_tracked!(axum::extract::rejection::QueryRejection, QueryRejection);
-impl_from_tracked!(axum::extract::rejection::JsonRejection, BodyRejection);
 impl_from_tracked!(ParseIntError, ParseInt);
 impl_from_tracked!(alloy::primitives::hex::FromHexError, ParseAddress);
 impl_from_tracked!(alloy::primitives::SignatureError, ParseSignature);
 impl_from_tracked!(solana_sdk::pubkey::ParsePubkeyError, ParseSolanaPubkey);
-impl_from_tracked!(solana_sdk::signature::ParseSignatureError, ParseSolanaSignature);
+impl_from_tracked!(
+    solana_sdk::signature::ParseSignatureError,
+    ParseSolanaSignature
+);
 
 impl HttpException {
     fn location(&self) -> Location {
         match self {
             Self::Validation { location, .. } => location,
-            Self::PathRejection { location, .. } => location,
-            Self::FormRejection { location, .. } => location,
-            Self::QueryRejection { location, .. } => location,
-            Self::BodyRejection { location, .. } => location,
             Self::BadRequest { location, .. } => location,
             Self::Unauthorized { location, .. } => location,
             Self::Internal { location, .. } => location,
@@ -162,6 +132,14 @@ impl HttpException {
     }
 
     #[track_caller]
+    pub fn validate<E: Into<Cow<'static, str>>>(error: E) -> Self {
+        Self::BadRequest {
+            message: error.into(),
+            location: core::panic::Location::caller(),
+        }
+    }
+
+    #[track_caller]
     pub fn unauthorized<E: Into<Cow<'static, str>>>(error: E) -> Self {
         Self::Unauthorized {
             message: error.into(),
@@ -173,12 +151,7 @@ impl HttpException {
 impl IntoResponse for HttpException {
     fn into_response(self) -> axum::response::Response {
         let status_code = match &self {
-            Self::BadRequest { .. }
-            | Self::PathRejection { .. }
-            | Self::FormRejection { .. }
-            | Self::QueryRejection { .. }
-            | Self::BodyRejection { .. }
-            | Self::Validation { .. } => StatusCode::BAD_REQUEST,
+            Self::BadRequest { .. } | Self::Validation { .. } => StatusCode::BAD_REQUEST,
             Self::Unauthorized { .. } => StatusCode::UNAUTHORIZED,
             _ => {
                 self.trace();

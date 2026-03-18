@@ -17,7 +17,7 @@ use tracing::{error, info};
 
 use crate::handler::handle_log_from_ws;
 
-mod extrator;
+mod extractor;
 mod handler;
 
 /// Commitment level for transaction logs
@@ -80,7 +80,7 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
     loop {
         tokio::select! {
             frame = ws.read_frame() => {
-                if let Some(res) = extrator::extract_frame(&mut ws, frame?).await? {
+                if let Some(res) = extractor::extract_frame(&mut ws, frame?).await? {
                     match handle_log_from_ws(db, res).await {
                         Ok(Some(signature)) => info!("Processed transaction {}", signature),
                         Ok(None) => {},

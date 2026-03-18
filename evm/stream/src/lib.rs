@@ -31,7 +31,7 @@ pub async fn handle_log(db: &DatabaseConnection, log: &RpcLog) -> Rs<()> {
     let hash = log.transaction_hash.unwrap_or_default();
     let log_ix = log.log_index.unwrap_or_default() as i32;
 
-    if log_memos::is_existed(db, hash.to_string(), log_ix).await? {
+    if log_memos::is_existed(db, hash, log_ix).await? {
         return Ok(());
     }
 
@@ -48,7 +48,7 @@ pub async fn handle_log(db: &DatabaseConnection, log: &RpcLog) -> Rs<()> {
 
     log_memos::save(
         db,
-        hash.to_string(),
+        hash,
         log_ix,
         log.block_timestamp.unwrap_or_default() as i64,
     )

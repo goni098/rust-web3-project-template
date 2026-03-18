@@ -1,9 +1,9 @@
 use sea_orm::{ActiveValue::Set, ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
-use shared::{BAddress, result::Rs};
+use shared::{UnionAddr, result::Rs};
 
 use crate::entities::user;
 
-pub async fn find_by_wallet_address<A: BAddress>(
+pub async fn find_by_wallet_address<A: UnionAddr>(
     db: &DatabaseConnection,
     address: A,
 ) -> Rs<Option<user::Model>> {
@@ -15,7 +15,7 @@ pub async fn find_by_wallet_address<A: BAddress>(
     Ok(user)
 }
 
-pub async fn save<A: BAddress>(db: &DatabaseConnection, address: A) -> Rs<()> {
+pub async fn save<A: UnionAddr>(db: &DatabaseConnection, address: A) -> Rs<()> {
     let user = user::ActiveModel {
         wallet_address: Set(address.to_string()),
     };

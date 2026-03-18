@@ -43,17 +43,14 @@ impl From<Address> for UnionAddress {
     }
 }
 
-pub trait BTxHash: ToString {}
+pub trait UnionAddr: ToString {}
+pub trait UnionTxHash: ToString {}
 
-pub trait BAddress: ToString {}
+impl UnionTxHash for TxHash {}
+impl UnionTxHash for Signature {}
 
-impl BTxHash for TxHash {}
-
-impl BAddress for Address {}
-
-impl BTxHash for Signature {}
-
-impl BAddress for Pubkey {}
+impl UnionAddr for Address {}
+impl UnionAddr for Pubkey {}
 
 impl Display for UnionAddress {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -64,4 +61,4 @@ impl Display for UnionAddress {
     }
 }
 
-impl BAddress for UnionAddress {}
+impl UnionAddr for UnionAddress {}

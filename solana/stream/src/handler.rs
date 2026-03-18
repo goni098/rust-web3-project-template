@@ -22,7 +22,7 @@ pub async fn handle_log_from_ws(
 
     let events = pumpfun::utils::Event::from_logs(&res.value.logs);
 
-    solana_stream::handle_events(db, &signature, Utc::now().timestamp(), events).await?;
+    solana_stream::handle_events(db, signature, Utc::now().timestamp(), events).await?;
 
     Ok(Some(signature))
 }

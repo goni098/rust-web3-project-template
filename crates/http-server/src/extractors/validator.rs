@@ -16,7 +16,6 @@ pub struct ValidatedPath<P>(pub P);
 #[allow(dead_code)]
 pub struct ValidatedParams<Q>(pub Q);
 
-#[allow(dead_code)]
 pub struct ValidatedPayload<P>(pub P);
 
 #[allow(dead_code)]
@@ -31,7 +30,9 @@ where
     type Rejection = HttpException;
 
     async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
-        let Path(path) = Path::<P>::from_request_parts(parts, state).await?;
+        let Path(path) = Path::<P>::from_request_parts(parts, state)
+            .await
+            .map_err(|error| HttpException::validate(error.to_string()))?;
         path.validate()?;
         Ok(ValidatedPath(path))
     }
@@ -46,7 +47,9 @@ where
     type Rejection = HttpException;
 
     async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
-        let Query(query) = Query::<Q>::from_request_parts(parts, state).await?;
+        let Query(query) = Query::<Q>::from_request_parts(parts, state)
+            .await
+            .map_err(|error| HttpException::validate(error.to_string()))?;
         query.validate()?;
         Ok(ValidatedParams(query))
     }
@@ -61,7 +64,9 @@ where
     type Rejection = HttpException;
 
     async fn from_request(req: Request, state: &S) -> Result<Self, Self::Rejection> {
-        let Json(payload) = Json::<P>::from_request(req, state).await?;
+        let Json(payload) = Json::<P>::from_request(req, state)
+            .await
+            .map_err(|error| HttpException::validate(error.to_string()))?;
         payload.validate()?;
         Ok(ValidatedPayload(payload))
     }
@@ -76,7 +81,9 @@ where
     type Rejection = HttpException;
 
     async fn from_request(req: Request, state: &S) -> Result<Self, Self::Rejection> {
-        let Form(form) = Form::<T>::from_request(req, state).await?;
+        let Form(form) = Form::<T>::from_request(req, state)
+            .await
+            .map_err(|error| HttpException::validate(error.to_string()))?;
         form.validate()?;
         Ok(ValidatedForm(form))
     }

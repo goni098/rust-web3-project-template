@@ -15,7 +15,7 @@ use hyper::Uri;
 use shared::env::Env;
 use tokio::time::sleep;
 
-mod extrator;
+mod extractor;
 
 const PING_INTERVAL_SECS: u64 = 30;
 
@@ -83,7 +83,7 @@ async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketEr
     loop {
         tokio::select! {
             frame = ws.read_frame() => {
-                if let Some(log) = extrator::extract_frame(frame?, &mut ws).await? {
+                if let Some(log) = extractor::extract_frame(frame?, &mut ws).await? {
 
                     evm_stream::handle_log(db, &log)
                         .await

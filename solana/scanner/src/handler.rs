@@ -50,7 +50,7 @@ async fn handle_tx(
         let timestamp = txn.block_time.unwrap_or_default();
         let events = pumpfun::utils::Event::from_logs(logs);
 
-        solana_stream::handle_events(db, &signature, timestamp, events).await?;
+        solana_stream::handle_events(db, signature, timestamp, events).await?;
     }
 
     Ok(())

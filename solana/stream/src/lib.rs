@@ -6,7 +6,7 @@ use solana_sdk::signature::Signature;
 
 pub async fn handle_events(
     db: &DatabaseConnection,
-    signature: &Signature,
+    signature: Signature,
     timestamp: i64,
     events: Vec<pumpfun::utils::Event>,
 ) -> Rs<()> {
@@ -22,18 +22,18 @@ pub async fn handle_events(
 
 async fn handle_event(
     db: &DatabaseConnection,
-    signature: &Signature,
+    signature: Signature,
     log_ix: i32,
     timestamp: i64,
     event: pumpfun::utils::Event,
 ) -> Rs<()> {
-    if log_memos::is_existed(db, signature.to_string(), log_ix).await? {
+    if log_memos::is_existed(db, signature, log_ix).await? {
         return Ok(());
     }
 
     tracing::info!("event: {:#?}", event);
 
-    log_memos::save(db, signature.to_string(), log_ix, timestamp).await?;
+    log_memos::save(db, signature, log_ix, timestamp).await?;
 
     Ok(())
 }
