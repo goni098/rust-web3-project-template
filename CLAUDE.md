@@ -76,7 +76,7 @@ AppErr (enum: I/O, DB, RPC, Solana, custom)
   → Rs<T> = Result<T, TracedAppErr>
 ```
 
-All async functions return `Rs<T>`. Use `#[instrument]` liberally to populate span traces.
+All async functions return `Rs<T>`.
 
 ### Environment Variables
 
