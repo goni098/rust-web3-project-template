@@ -19,12 +19,9 @@ use crate::handler::handle_log_from_ws;
 mod extractor;
 mod handler;
 
-/// Commitment level for transaction logs
 const COMMITMENT: CommitmentConfig = CommitmentConfig::confirmed();
-/// Ping interval to keep WebSocket connection alive
-const PING_INTERVAL_SECS: u64 = 30;
-
-const DELAY_RECONNECT: u64 = 3;
+const PING_INTERVAL: Duration = Duration::from_millis(30_000);
+const DELAY_RECONNECT: Duration = Duration::from_millis(1_000);
 
 static ID: AtomicU64 = AtomicU64::new(1);
 
@@ -47,12 +44,12 @@ async fn main() {
             tracing::error!("WebSocket connection error, reconnecting... {}", err);
         }
 
-        sleep(Duration::from_secs(DELAY_RECONNECT)).await;
+        sleep(DELAY_RECONNECT).await;
     }
 }
 
 async fn bootstrap(db: &DatabaseConnection, uri: &Uri) -> Result<(), WebSocketError> {
-    let mut ping_clock = tokio::time::interval(Duration::from_secs(PING_INTERVAL_SECS));
+    let mut ping_clock = tokio::time::interval(PING_INTERVAL);
 
     let mut ws = ws_client::connect(uri).await?;
     tracing::info!("WebSocket connected {}", uri);

@@ -13,12 +13,9 @@ use crate::cursor::load_or_init_cursor;
 use crate::handler::consume_txs;
 use crate::signature::retrieve_txs;
 
-/// Maximum concurrent signature processing
 const CONCURRENCY_SIGNATURE: usize = 30;
-/// Commitment level for transaction finality
 const COMMITMENT: CommitmentConfig = CommitmentConfig::finalized();
-/// Interval between scan cycles
-const SCAN_INTERVAL_SECS: u64 = 6;
+const SCAN_FREQUENCY: Duration = Duration::from_millis(6_000);
 
 mod cursor;
 mod handler;
@@ -51,7 +48,7 @@ async fn main() {
             error.trace("Scan failed");
         }
 
-        tokio::time::sleep(Duration::from_secs(SCAN_INTERVAL_SECS)).await;
+        tokio::time::sleep(SCAN_FREQUENCY).await;
     }
 }
 

@@ -17,11 +17,14 @@ use futures_util::future::try_join_all;
 use shared::{env::Env, result::Rs};
 use tokio::time::sleep;
 
+const SCAN_FREQUENCY: Duration = Duration::from_millis(6_000);
+
 #[tokio::main]
 async fn main() {
     shared::env::load();
     shared::tracing::subscribe();
-    bootstrap(shared::arg::parse_chain_id_arg()).await.unwrap();
+    let chain_id = shared::arg::parse_chain_id_arg();
+    bootstrap(chain_id).await.unwrap();
 }
 
 async fn bootstrap(chain_id: u64) -> Rs<()> {
@@ -78,7 +81,7 @@ async fn bootstrap(chain_id: u64) -> Rs<()> {
             }
         };
 
-        sleep(Duration::from_secs(60)).await;
+        sleep(SCAN_FREQUENCY).await;
     }
 }
 

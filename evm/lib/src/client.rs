@@ -129,19 +129,19 @@ impl SendEip1559 for WalletClient {
         sender: Option<Address>,
     ) -> Rs<TxHash> {
         const MAX_ATTEMPTS: u8 = 3;
-        const TX_TIMEOUT_SECS: u64 = 90;
-        const RETRY_DELAY_SECS: u64 = 2;
+        const TX_TIMEOUT: Duration = Duration::from_millis(90_000);
+        const RETRY_DELAY: Duration = Duration::from_millis(2_000);
 
         let mut attempt = 0;
 
         loop {
-            let result = tokio::time::timeout(
-                Duration::from_secs(TX_TIMEOUT_SECS),
-                self.send_eip1559_tx(tx.clone(), 12, sender),
-            )
-            .await
-            .map_err(|_| AppErr::custom(format!("Transaction timeout on chain {:?}", tx.chain_id)))
-            .and_then(convert::identity);
+            let result =
+                tokio::time::timeout(TX_TIMEOUT, self.send_eip1559_tx(tx.clone(), 12, sender))
+                    .await
+                    .map_err(|_| {
+                        AppErr::custom(format!("Transaction timeout on chain {:?}", tx.chain_id))
+                    })
+                    .and_then(convert::identity);
 
             match result {
                 Ok(tx_hash) => return Ok(tx_hash),
@@ -152,7 +152,7 @@ impl SendEip1559 for WalletClient {
                         return Err(error);
                     }
 
-                    tokio::time::sleep(Duration::from_secs(RETRY_DELAY_SECS)).await;
+                    tokio::time::sleep(RETRY_DELAY).await;
                 }
             }
         }

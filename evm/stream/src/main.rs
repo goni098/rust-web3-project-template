@@ -17,10 +17,8 @@ use tokio::time::sleep;
 
 mod extractor;
 
-const PING_INTERVAL_SECS: u64 = 30;
-
-const DELAY_RECONNECT_SECS: u64 = 3;
-
+const PING_INTERVAL: Duration = Duration::from_millis(30_000);
+const DELAY_RECONNECT: Duration = Duration::from_millis(1_000);
 static ID: AtomicU64 = AtomicU64::new(1);
 
 #[tokio::main]
@@ -46,7 +44,7 @@ async fn main() {
             tracing::error!("WebSocketError >> {}", err);
         }
 
-        sleep(Duration::from_secs(DELAY_RECONNECT_SECS)).await;
+        sleep(DELAY_RECONNECT).await;
     }
 }
 
@@ -55,7 +53,7 @@ async fn bootstrap(
     uri: &Uri,
     chain: SupportedChain,
 ) -> Result<(), WebSocketError> {
-    let mut ping_clock = tokio::time::interval(Duration::from_secs(PING_INTERVAL_SECS));
+    let mut ping_clock = tokio::time::interval(PING_INTERVAL);
 
     let mut ws = ws_client::connect(uri).await?;
     tracing::info!("WebSocket connected {}", uri);
