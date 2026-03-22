@@ -9,57 +9,57 @@ type Location = &'static core::panic::Location<'static>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum HttpException {
-    #[error("Validation: {source}")]
+    #[error("Validation: {src}")]
     Validation {
-        source: validator::ValidationErrors,
+        src: validator::ValidationErrors,
         location: Location,
     },
 
-    #[error("BadRequest: {message}")]
+    #[error("BadRequest: {msg}")]
     BadRequest {
-        message: Cow<'static, str>,
+        msg: Cow<'static, str>,
         location: Location,
     },
 
-    #[error("Unauthorized: {message}")]
+    #[error("Unauthorized: {msg}")]
     Unauthorized {
-        message: Cow<'static, str>,
+        msg: Cow<'static, str>,
         location: Location,
     },
 
-    #[error("message: {message}")]
+    #[error("msg: {msg}")]
     Internal {
-        message: Cow<'static, str>,
+        msg: Cow<'static, str>,
         location: Location,
     },
 
-    #[error("ParseInt: {source}")]
+    #[error("ParseInt: {src}")]
     ParseInt {
-        source: std::num::ParseIntError,
+        src: std::num::ParseIntError,
         location: Location,
     },
 
-    #[error("ParseAddress: {source}")]
+    #[error("ParseAddress: {src}")]
     ParseAddress {
-        source: alloy::primitives::hex::FromHexError,
+        src: alloy::primitives::hex::FromHexError,
         location: Location,
     },
 
-    #[error("ParseSignature: {source}")]
+    #[error("ParseSignature: {src}")]
     ParseSignature {
-        source: alloy::primitives::SignatureError,
+        src: alloy::primitives::SignatureError,
         location: Location,
     },
 
-    #[error("ParseSolanaPubkey: {source}")]
+    #[error("ParseSolanaPubkey: {src}")]
     ParseSolanaPubkey {
-        source: solana_sdk::pubkey::ParsePubkeyError,
+        src: solana_sdk::pubkey::ParsePubkeyError,
         location: Location,
     },
 
-    #[error("ParseSolanaSignature: {source}")]
+    #[error("ParseSolanaSignature: {src}")]
     ParseSolanaSignature {
-        source: solana_sdk::signature::ParseSignatureError,
+        src: solana_sdk::signature::ParseSignatureError,
         location: Location,
     },
 
@@ -71,12 +71,12 @@ pub enum HttpException {
 pub type HttpResult<A> = Result<A, HttpException>;
 
 macro_rules! impl_from_tracked {
-    ($source_type:ty, $variant:ident) => {
-        impl From<$source_type> for HttpException {
+    ($src_type:ty, $variant:ident) => {
+        impl From<$src_type> for HttpException {
             #[track_caller]
-            fn from(source: $source_type) -> Self {
+            fn from(src: $src_type) -> Self {
                 Self::$variant {
-                    source,
+                    src,
                     location: core::panic::Location::caller(),
                 }
             }
@@ -111,14 +111,13 @@ impl HttpException {
     }
 
     fn trace(&self) {
-        let location = self.location();
-        tracing::error!("{}\nTrace: {}", self, location);
+        tracing::error!("{}\nTrace: {}", self, self.location());
     }
 
     #[track_caller]
     pub fn internal<E: ToString>(error: E) -> Self {
         Self::Internal {
-            message: error.to_string().into(),
+            msg: error.to_string().into(),
             location: core::panic::Location::caller(),
         }
     }
@@ -127,7 +126,7 @@ impl HttpException {
     #[allow(dead_code)]
     pub fn bad_request<E: Into<Cow<'static, str>>>(error: E) -> Self {
         Self::BadRequest {
-            message: error.into(),
+            msg: error.into(),
             location: core::panic::Location::caller(),
         }
     }
@@ -135,7 +134,7 @@ impl HttpException {
     #[track_caller]
     pub fn validate<E: Into<Cow<'static, str>>>(error: E) -> Self {
         Self::BadRequest {
-            message: error.into(),
+            msg: error.into(),
             location: core::panic::Location::caller(),
         }
     }
@@ -143,7 +142,7 @@ impl HttpException {
     #[track_caller]
     pub fn unauthorized<E: Into<Cow<'static, str>>>(error: E) -> Self {
         Self::Unauthorized {
-            message: error.into(),
+            msg: error.into(),
             location: core::panic::Location::caller(),
         }
     }
@@ -162,9 +161,9 @@ impl IntoResponse for HttpException {
 
         let body = Json(json!({
             "code": status_code.as_u16(),
-            "message": self.to_string(),
+            "msg": self.to_string(),
         }));
 
-        axum::response::IntoResponse::into_response((status_code, body))
+        (status_code, body).into_response()
     }
 }

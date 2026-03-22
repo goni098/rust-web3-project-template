@@ -147,18 +147,6 @@ paths:
                                         type: string
                                         description: The authenticated user's wallet address
 
-    /random-u64:
-        get:
-            summary: Random u64 WebSocket stream
-            tags:
-                - ws
-            description: |
-                WebSocket endpoint. Streams a random u64 value as a binary frame every second.
-
-            responses:
-                "101":
-                    description: Switching protocols (WebSocket upgrade)
-
 components:
     securitySchemes:
         BearerAuth:

@@ -26,8 +26,12 @@ async fn main() -> Rs<()> {
             get(async || include_str!("../docs/openapi.yml")),
         )
         .route(
-            "/docs",
-            get(async || Html(include_str!("../docs/openapi.html"))),
+            "/swagger",
+            get(async || Html(include_str!("../docs/swagger.html"))),
+        )
+        .route(
+            "/scalar",
+            get(async || Html(include_str!("../docs/scalar.html"))),
         )
         .merge(handlers::auth::routes())
         .merge(handlers::users::routes())

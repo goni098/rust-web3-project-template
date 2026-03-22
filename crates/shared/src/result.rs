@@ -4,9 +4,9 @@ type Location = &'static core::panic::Location<'static>;
 
 #[derive(Debug, thiserror::Error)]
 pub enum AppErr {
-    #[error("I/O: {source}")]
+    #[error("I/O: {src}")]
     Io {
-        source: std::io::Error,
+        src: std::io::Error,
         location: Location,
     },
 
@@ -16,75 +16,75 @@ pub enum AppErr {
         location: Location,
     },
 
-    #[error("ParseInt: {source}")]
+    #[error("ParseInt: {src}")]
     ParseInt {
-        source: std::num::ParseIntError,
+        src: std::num::ParseIntError,
         location: Location,
     },
 
-    #[error("Database: {source}")]
+    #[error("Database: {src}")]
     Database {
-        source: sea_orm::error::DbErr,
+        src: sea_orm::error::DbErr,
         location: Location,
     },
 
-    #[error("EvmRpc: {source}")]
+    #[error("EvmRpc: {src}")]
     EvmRpc {
-        source: alloy::transports::RpcError<alloy::transports::TransportErrorKind>,
+        src: alloy::transports::RpcError<alloy::transports::TransportErrorKind>,
         location: Location,
     },
 
-    #[error("SolTypes: {source}")]
+    #[error("SolTypes: {src}")]
     SolTypes {
-        source: alloy::sol_types::Error,
+        src: alloy::sol_types::Error,
         location: Location,
     },
 
-    #[error("WaitReceiptTx: {source}")]
+    #[error("WaitReceiptTx: {src}")]
     WaitReceiptTx {
-        source: alloy::providers::PendingTransactionError,
+        src: alloy::providers::PendingTransactionError,
         location: Location,
     },
 
-    #[error("SolanaClient: {source}")]
+    #[error("SolanaClient: {src}")]
     SolanaClient {
-        source: solana_client::client_error::ClientError,
+        src: solana_client::client_error::ClientError,
         location: Location,
     },
 
-    #[error("ParseSignature: {source}")]
+    #[error("ParseSignature: {src}")]
     ParseSignature {
-        source: solana_sdk::signature::ParseSignatureError,
+        src: solana_sdk::signature::ParseSignatureError,
         location: Location,
     },
 
-    #[error("ParseHexAddress: {source}")]
+    #[error("ParseHexAddress: {src}")]
     ParseHexAddress {
-        source: alloy::hex::FromHexError,
+        src: alloy::hex::FromHexError,
         location: Location,
     },
 
-    #[error("ParseSolanaPubkey: {source}")]
+    #[error("ParseSolanaPubkey: {src}")]
     ParseSolanaPubkey {
-        source: solana_sdk::pubkey::ParsePubkeyError,
+        src: solana_sdk::pubkey::ParsePubkeyError,
         location: Location,
     },
 
-    #[error("ReadEnv: {source}")]
+    #[error("ReadEnv: {src}")]
     ReadEnv {
-        source: std::env::VarError,
+        src: std::env::VarError,
         location: Location,
     },
 
-    #[error("ParseUrl: {source}")]
+    #[error("ParseUrl: {src}")]
     ParseUrl {
-        source: url::ParseError,
+        src: url::ParseError,
         location: Location,
     },
 
-    #[error("ParseUrl: {source}")]
+    #[error("ParseUrl: {src}")]
     ParseUri {
-        source: hyper::http::uri::InvalidUri,
+        src: hyper::http::uri::InvalidUri,
         location: Location,
     },
 }
@@ -93,9 +93,9 @@ macro_rules! impl_from_tracked {
     ($source_type:ty, $variant:ident) => {
         impl From<$source_type> for AppErr {
             #[track_caller]
-            fn from(source: $source_type) -> Self {
+            fn from(src: $source_type) -> Self {
                 Self::$variant {
-                    source,
+                    src,
                     location: core::panic::Location::caller(),
                 }
             }
@@ -143,8 +143,7 @@ impl AppErr {
     }
 
     pub fn trace<C: AsRef<str>>(&self, ctx: C) {
-        let location = self.location();
-        tracing::error!("{} >> {}\nTrace: {}", ctx.as_ref(), self, location);
+        tracing::error!("{} >> {}\nTrace: {}", ctx.as_ref(), self, self.location());
     }
 
     #[track_caller]
