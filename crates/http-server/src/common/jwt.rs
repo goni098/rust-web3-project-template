@@ -13,7 +13,7 @@ where
 {
     let header = Header::new(Algorithm::HS256);
 
-    let access_secret = shared::env::read(Env::AccessTokenKey);
+    let access_secret = shared::env::read(Env::AccessTokenKey)?;
 
     let now = Utc::now().timestamp();
     let access_exp = now + Duration::days(3).num_seconds();

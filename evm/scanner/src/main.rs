@@ -28,7 +28,7 @@ async fn main() {
 }
 
 async fn bootstrap(chain_id: u64) -> Rs<()> {
-    let db_url = shared::env::read(Env::DatabaseUrl);
+    let db_url = shared::env::read(Env::DatabaseUrl)?;
     let db = database::establish_connection(&db_url).await?;
 
     let chain = SupportedChain::try_from(chain_id)?;

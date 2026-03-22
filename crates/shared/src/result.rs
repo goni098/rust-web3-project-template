@@ -1,4 +1,4 @@
-use std::{borrow::Cow, num::ParseIntError};
+use std::borrow::Cow;
 
 type Location = &'static core::panic::Location<'static>;
 
@@ -18,7 +18,7 @@ pub enum AppErr {
 
     #[error("ParseInt: {source}")]
     ParseInt {
-        source: ParseIntError,
+        source: std::num::ParseIntError,
         location: Location,
     },
 
@@ -69,6 +69,24 @@ pub enum AppErr {
         source: solana_sdk::pubkey::ParsePubkeyError,
         location: Location,
     },
+
+    #[error("ReadEnv: {source}")]
+    ReadEnv {
+        source: std::env::VarError,
+        location: Location,
+    },
+
+    #[error("ParseUrl: {source}")]
+    ParseUrl {
+        source: url::ParseError,
+        location: Location,
+    },
+
+    #[error("ParseUrl: {source}")]
+    ParseUri {
+        source: hyper::http::uri::InvalidUri,
+        location: Location,
+    },
 }
 
 macro_rules! impl_from_tracked {
@@ -86,7 +104,7 @@ macro_rules! impl_from_tracked {
 }
 
 impl_from_tracked!(std::io::Error, Io);
-impl_from_tracked!(ParseIntError, ParseInt);
+impl_from_tracked!(std::num::ParseIntError, ParseInt);
 impl_from_tracked!(sea_orm::error::DbErr, Database);
 impl_from_tracked!(
     alloy::transports::RpcError<alloy::transports::TransportErrorKind>,
@@ -98,6 +116,9 @@ impl_from_tracked!(solana_client::client_error::ClientError, SolanaClient);
 impl_from_tracked!(solana_sdk::signature::ParseSignatureError, ParseSignature);
 impl_from_tracked!(solana_sdk::pubkey::ParsePubkeyError, ParseSolanaPubkey);
 impl_from_tracked!(alloy::hex::FromHexError, ParseHexAddress);
+impl_from_tracked!(std::env::VarError, ReadEnv);
+impl_from_tracked!(url::ParseError, ParseUrl);
+impl_from_tracked!(hyper::http::uri::InvalidUri, ParseUri);
 
 pub type Rs<T> = Result<T, AppErr>;
 
@@ -115,6 +136,9 @@ impl AppErr {
             AppErr::WaitReceiptTx { location, .. } => location,
             AppErr::ParseHexAddress { location, .. } => location,
             AppErr::ParseSolanaPubkey { location, .. } => location,
+            AppErr::ReadEnv { location, .. } => location,
+            AppErr::ParseUrl { location, .. } => location,
+            AppErr::ParseUri { location, .. } => location,
         }
     }
 

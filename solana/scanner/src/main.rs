@@ -22,25 +22,19 @@ mod handler;
 mod signature;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Rs<()> {
     shared::env::load();
     shared::tracing::subscribe();
 
-    let rpc_url = shared::env::read(Env::SolanaRpc);
-    let db_url = shared::env::read(Env::DatabaseUrl);
+    let rpc_url = shared::env::read(Env::SolanaRpc)?;
+    let db_url = shared::env::read(Env::DatabaseUrl)?;
 
     let client = RpcClient::new(rpc_url);
 
-    let db = database::establish_connection(&db_url)
-        .await
-        .unwrap_or_else(|error| panic!("Db error {}", error));
-
-    let mut cursor = load_or_init_cursor(&db, &client)
-        .await
-        .unwrap_or_else(|error| panic!("find cursor error {}", error));
+    let db = database::establish_connection(&db_url).await?;
+    let mut cursor = load_or_init_cursor(&db, &client).await?;
 
     tracing::info!("Event scanner started on {}", pumpfun::ID);
-
     tracing::info!("Starting from signature {}", cursor);
 
     loop {

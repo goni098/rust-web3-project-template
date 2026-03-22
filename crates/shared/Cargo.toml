@@ -14,3 +14,6 @@ solana-sdk = { workspace = true }
 solana-client = { workspace = true }
 serde = { workspace = true }
 validator = { workspace = true }
+strum = { workspace = true }
+url = { workspace = true }
+hyper = { workspace = true }

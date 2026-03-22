@@ -163,7 +163,7 @@ fn create_root_client(chain_id: u64) -> RpcClient {
     let fallback_layer =
         FallbackLayer::default().with_active_transport_count(NonZeroUsize::new(2).unwrap());
 
-    let (public_rpc, private_rpc) = read_rpcs_by_chain(chain_id);
+    let (public_rpc, private_rpc) = read_rpcs_by_chain(chain_id).unwrap();
 
     let transports = [Http::new(private_rpc), Http::new(public_rpc)].to_vec();
 
@@ -174,14 +174,8 @@ fn create_root_client(chain_id: u64) -> RpcClient {
     RpcClient::builder().transport(transport, false)
 }
 
-fn read_rpcs_by_chain(chain_id: u64) -> (Url, Url) {
-    let public_rpc = shared::env::read(Env::PubEvmRpc(chain_id))
-        .parse()
-        .unwrap_or_else(|_| panic!("invalid public rpc, chain {}", chain_id));
-
-    let private_rpc = shared::env::read(Env::PriEvmRpc(chain_id))
-        .parse()
-        .unwrap_or_else(|_| panic!("invalid private rpc, chain {}", chain_id));
-
-    (public_rpc, private_rpc)
+fn read_rpcs_by_chain(chain_id: u64) -> Rs<(Url, Url)> {
+    let public_rpc = shared::env::read(Env::PubEvmRpc(chain_id))?.parse()?;
+    let private_rpc = shared::env::read(Env::PriEvmRpc(chain_id))?.parse()?;
+    Ok((public_rpc, private_rpc))
 }

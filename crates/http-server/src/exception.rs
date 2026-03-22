@@ -1,6 +1,7 @@
+use std::borrow::Cow;
+
 use axum::{Json, http::StatusCode, response::IntoResponse};
 use serde_json::json;
-use std::{borrow::Cow, num::ParseIntError};
 
 use shared::result::AppErr;
 
@@ -34,7 +35,7 @@ pub enum HttpException {
 
     #[error("ParseInt: {source}")]
     ParseInt {
-        source: ParseIntError,
+        source: std::num::ParseIntError,
         location: Location,
     },
 
@@ -84,7 +85,7 @@ macro_rules! impl_from_tracked {
 }
 
 impl_from_tracked!(validator::ValidationErrors, Validation);
-impl_from_tracked!(ParseIntError, ParseInt);
+impl_from_tracked!(std::num::ParseIntError, ParseInt);
 impl_from_tracked!(alloy::primitives::hex::FromHexError, ParseAddress);
 impl_from_tracked!(alloy::primitives::SignatureError, ParseSignature);
 impl_from_tracked!(solana_sdk::pubkey::ParsePubkeyError, ParseSolanaPubkey);

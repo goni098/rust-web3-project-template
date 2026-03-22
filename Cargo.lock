@@ -5616,13 +5616,16 @@ version = "0.1.0"
 dependencies = [
  "alloy",
  "dotenv",
+ "hyper",
  "sea-orm",
  "serde",
  "solana-client",
  "solana-sdk",
+ "strum 0.28.0",
  "thiserror 2.0.18",
  "tracing",
  "tracing-subscriber",
+ "url",
  "validator",
 ]
 

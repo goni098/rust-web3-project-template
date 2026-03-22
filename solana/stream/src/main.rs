@@ -7,7 +7,7 @@ use std::{
 use database::sea_orm::DatabaseConnection;
 use fastwebsockets::{Frame, OpCode, Payload, WebSocketError};
 use hyper::Uri;
-use shared::env::Env;
+use shared::{env::Env, result::Rs};
 use sol_lib::pumpfun;
 use solana_client::rpc_config::{
     CommitmentConfig, RpcTransactionLogsConfig, RpcTransactionLogsFilter,
@@ -26,18 +26,16 @@ const DELAY_RECONNECT: Duration = Duration::from_millis(1_000);
 static ID: AtomicU64 = AtomicU64::new(1);
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Rs<()> {
     shared::env::load();
     shared::tracing::subscribe();
 
-    let db_url = shared::env::read(Env::DatabaseUrl);
-    let ws_rpc = shared::env::read(Env::SolanaWsRpc);
+    let db_url = shared::env::read(Env::DatabaseUrl)?;
+    let ws_rpc = shared::env::read(Env::SolanaWsRpc)?;
 
-    let uri = Uri::from_str(&ws_rpc).unwrap_or_else(|_| panic!("invalid ws rpc {}", ws_rpc));
+    let uri = Uri::from_str(&ws_rpc)?;
 
-    let db = database::establish_connection(&db_url)
-        .await
-        .unwrap_or_else(|error| panic!("Database connection error: {}", error));
+    let db = database::establish_connection(&db_url).await?;
 
     loop {
         if let Err(err) = bootstrap(&db, &uri).await {

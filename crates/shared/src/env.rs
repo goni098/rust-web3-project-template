@@ -1,5 +1,7 @@
 use std::borrow::Cow;
 
+use crate::result::Rs;
+
 pub enum Env {
     DatabaseUrl,
     AccessTokenKey,
@@ -19,10 +21,8 @@ pub fn load() {
 }
 
 /// Reads an environment variable, panicking with a clear message if missing
-pub fn read(env: Env) -> String {
-    let var = env.key();
-    std::env::var(var.as_ref())
-        .unwrap_or_else(|_| panic!("Missing required environment variable: {}", var))
+pub fn read(env: Env) -> Rs<String> {
+    std::env::var(env.key().as_ref()).map_err(Into::into)
 }
 
 impl Env {

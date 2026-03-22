@@ -12,7 +12,7 @@ use evm_lib::{
 };
 use fastwebsockets::{Frame, OpCode, Payload, WebSocketError};
 use hyper::Uri;
-use shared::env::Env;
+use shared::{env::Env, result::Rs};
 use tokio::time::sleep;
 
 mod extractor;
@@ -22,22 +22,19 @@ const DELAY_RECONNECT: Duration = Duration::from_millis(1_000);
 static ID: AtomicU64 = AtomicU64::new(1);
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Rs<()> {
     shared::env::load();
     shared::tracing::subscribe();
 
     let chain_id = shared::arg::parse_chain_id_arg();
-    let chain = SupportedChain::try_from(chain_id).expect("invalid chain id");
+    let chain = SupportedChain::try_from(chain_id)?;
 
-    let db_url = shared::env::read(Env::DatabaseUrl);
-    let ws_rpc = shared::env::read(Env::EvmWsRpc(chain_id));
+    let db_url = shared::env::read(Env::DatabaseUrl)?;
+    let ws_rpc = shared::env::read(Env::EvmWsRpc(chain_id))?;
 
-    let uri =
-        Uri::from_str(&ws_rpc).unwrap_or_else(|_| panic!("invalid ws rpc chain {}", chain_id));
+    let uri = Uri::from_str(&ws_rpc)?;
 
-    let db = database::establish_connection(&db_url)
-        .await
-        .unwrap_or_else(|error| panic!("Db error {}", error));
+    let db = database::establish_connection(&db_url).await?;
 
     loop {
         if let Err(err) = bootstrap(&db, &uri, chain).await {

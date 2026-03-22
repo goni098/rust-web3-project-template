@@ -1,4 +1,5 @@
 use axum::{Router, response::Html, routing::get};
+use shared::result::Rs;
 use tower_http::cors::CorsLayer;
 
 use crate::extractors::state::AppState;
@@ -12,11 +13,11 @@ mod handlers;
 const SERVER_PORT: u16 = 8080;
 
 #[tokio::main]
-async fn main() -> Result<(), std::io::Error> {
+async fn main() -> Rs<()> {
     shared::tracing::subscribe();
     shared::env::load();
 
-    let state = AppState::new().await;
+    let state = AppState::new().await?;
 
     let app = Router::new()
         .route("/", get(async || "hello !"))

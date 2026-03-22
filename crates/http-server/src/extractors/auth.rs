@@ -1,19 +1,12 @@
-use crate::{
-    exception::{HttpException, HttpResult},
-    extractors::state::Secrets,
-};
-use axum::{
-    RequestPartsExt,
-    extract::{FromRef, FromRequestParts},
-    http::request::Parts,
-};
+use crate::exception::{HttpException, HttpResult};
+use axum::{RequestPartsExt, extract::FromRequestParts, http::request::Parts};
 use axum_extra::{
     TypedHeader,
     headers::{Authorization, authorization::Bearer},
 };
 use jsonwebtoken::{DecodingKey, Validation, errors::ErrorKind};
 use serde::{Deserialize, Serialize, de::DeserializeOwned};
-use shared::UnionAddress;
+use shared::{UnionAddress, env::Env};
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Claims {
@@ -26,18 +19,17 @@ pub struct Auth(pub Claims);
 impl<S> FromRequestParts<S> for Auth
 where
     S: Send + Sync,
-    Secrets: FromRef<S>,
 {
     type Rejection = HttpException;
 
-    async fn from_request_parts(parts: &mut Parts, state: &S) -> HttpResult<Self> {
-        let access_token_secret = Secrets::from_ref(state).access_token_key;
+    async fn from_request_parts(parts: &mut Parts, _state: &S) -> HttpResult<Self> {
+        let secret = shared::env::read(Env::AccessTokenKey)?;
 
         parts
             .extract::<TypedHeader<Authorization<Bearer>>>()
             .await
             .map_err(|_| HttpException::unauthorized("Missing Authorization"))
-            .and_then(|bearer| decode_token(bearer.token(), &access_token_secret))
+            .and_then(|bearer| decode_token(bearer.token(), &secret))
             .map(Self)
     }
 }

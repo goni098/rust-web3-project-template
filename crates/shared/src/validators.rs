@@ -17,9 +17,9 @@ pub fn validate_evm_address(val: &str) -> Result<(), ValidationError> {
 }
 
 pub fn validate_union_address(val: &str) -> Result<(), ValidationError> {
-    val.parse::<UnionAddress>()
-        .map(|_| ())
-        .map_err(|_| ValidationError::new("invalid_union_address"))
+    val.parse::<UnionAddress>().map(|_| ()).map_err(|_| {
+        ValidationError::new("invalid_union_address expect Evm address or Solana pubkey")
+    })
 }
 
 pub fn validate_evm_signature(val: &str) -> Result<(), ValidationError> {
